@@ -19,6 +19,7 @@ gem 'simple_form'
 gem 'title'
 gem 'uglifier'
 gem 'unicorn'
+gem 'usda-nutrient-database', github: 'mcmire/usda-nutrient-database', branch: 'ew-make-importing-faster'
 
 group :development do
   gem 'foreman'

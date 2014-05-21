@@ -1,0 +1,55 @@
+= simple_form_for ingredient,
+  wrapper: :horizontal_form,
+  html: { class: 'form-horizontal ingredient-form' } do |f|
+
+  .row
+    .col-sm-12
+      .form-group(class="#{'has-error' if ingredient.errors[:name].any?}")
+        = f.label :name, class: 'control-label col-sm-2'
+        .col-sm-10
+          = f.input_field :name, class: 'form-control'
+          span.help-block= f.error :name
+
+  .row
+    .col-sm-6= f.input :form, collection: Ingredient.forms
+    .col-sm-6= f.input :unit, collection: Ingredient.units
+
+  .row
+    .col-sm-6
+      = f.input :container_size,
+        as: :having_unit,
+        unit: 'g',
+        wrapper: :horizontal_input_group
+    .col-sm-6
+      = f.input :cost,
+        as: :currency,
+        wrapper: :horizontal_input_group
+
+  .row
+    .col-sm-6= f.input :source
+    .col-sm-6= f.input :link
+
+  .row
+    .col-sm-6
+      = f.input :daily_serving,
+        as: :having_unit,
+        unit: 'g',
+        wrapper: :horizontal_input_group
+    .col-sm-6
+      = f.input :serving_size,
+        as: :having_unit,
+        unit: 'g',
+        wrapper: :horizontal_input_group
+
+  hr
+
+  = f.simple_fields_for :nutrient_collection do |ncf|
+    = render 'nutrient_collections/fields',
+      parent_form: f,
+      form: ncf
+
+  hr
+
+  .row
+    .col-sm-12.buttons
+      = f.button :submit, class: 'btn-primary'

@@ -1,0 +1,21 @@
+@mixin center-align {
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.ingredient-page.content-container {
+  @include center-align;
+  width: 800px;
+
+  .ingredient-form {
+    .buttons {
+      text-align: center;
+      margin-bottom: 1em;
+    }
+  }
+}
+

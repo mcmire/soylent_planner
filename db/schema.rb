@@ -11,10 +11,67 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140513061626) do
+ActiveRecord::Schema.define(version: 20140523072124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ingredients", force: true do |t|
+    t.string  "name",                                           default: "",       null: false
+    t.string  "form",                                           default: "powder", null: false
+    t.string  "unit",                                           default: "g"
+    t.integer "container_size",                                                    null: false
+    t.decimal "cost",                   precision: 2, scale: 0
+    t.string  "source"
+    t.string  "link"
+    t.integer "daily_serving"
+    t.integer "serving_size"
+    t.integer "nutrient_collection_id"
+  end
+
+  create_table "nutrient_collections", force: true do |t|
+    t.decimal "calories"
+    t.decimal "carbohydrates"
+    t.decimal "protein"
+    t.decimal "total_fat"
+    t.decimal "saturated_fat"
+    t.decimal "monounsaturated_fat"
+    t.decimal "polyunsaturated_fat"
+    t.decimal "omega_3"
+    t.decimal "omega_6"
+    t.decimal "total_fiber"
+    t.decimal "soluble_fiber"
+    t.decimal "insoluble_fiber"
+    t.decimal "cholesterol"
+    t.decimal "calcium"
+    t.decimal "chloride"
+    t.decimal "chromium"
+    t.decimal "copper"
+    t.decimal "iodine"
+    t.decimal "iron"
+    t.decimal "magnesium"
+    t.decimal "manganese"
+    t.decimal "molybdenum"
+    t.decimal "phosphorus"
+    t.decimal "potassium"
+    t.decimal "selenium"
+    t.decimal "sodium"
+    t.decimal "sulfur"
+    t.decimal "zinc"
+    t.decimal "vitamin_a"
+    t.decimal "vitamin_b6"
+    t.decimal "vitamin_b12"
+    t.decimal "vitamin_c"
+    t.decimal "vitamin_e"
+    t.decimal "vitamin_k"
+    t.decimal "thiamin"
+    t.decimal "riboflavin"
+    t.decimal "niacin"
+    t.decimal "folate"
+    t.decimal "pantothenic_acid"
+    t.decimal "biotin"
+    t.decimal "choline"
+  end
 
   create_table "usda_food_groups", id: false, force: true do |t|
     t.string   "code",        null: false

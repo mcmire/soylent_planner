@@ -1,0 +1,41 @@
+.usda-foods {
+  form {
+    text-align: center;
+
+    .form-control {
+      width: 300px;
+    }
+
+    button {
+      margin-left: 5px;
+    }
+  }
+}
+
+.usda-food {
+  h3 {
+    @extend .row;
+  }
+
+  dl {
+    @extend .row;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+  }
+
+  dt, dd {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  dt {
+    @extend .col-sm-4;
+    display: block;
+    clear: both;
+  }
+
+  dd {
+    @extend .col-sm-8;
+    display: block;
+  }
+}

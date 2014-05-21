@@ -1,0 +1,22 @@
+h1 USDA Foods
+
+.usda-foods
+  form.form-inline.food-search
+    .form-group
+      input.form-control(
+        type='search'
+        name='q'
+        value="#{params[:q]}"
+        placeholder='Search for a food'
+      )
+    button.btn.btn-primary Search
+
+  - if params[:q]
+    hr
+    - if @usda_foods.count(:all) > 0
+      ul
+        - @usda_foods.each do |food|
+          li= link_to food.long_description, usda_food_path(food)
+      = paginate @usda_foods
+    - else
+      p No matches.

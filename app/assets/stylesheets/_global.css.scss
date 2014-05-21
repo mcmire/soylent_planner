@@ -1,0 +1,8 @@
+@mixin center-align {
+  margin: 0 auto;
+}
+
+.container {
+  @include center-align;
+  width: 800px;
+}

@@ -8,5 +8,6 @@ html
     = csrf_meta_tags
   body(class="#{body_class}")
     = render 'flashes'
-    = yield
+    .container
+      = yield
     = render 'javascript'

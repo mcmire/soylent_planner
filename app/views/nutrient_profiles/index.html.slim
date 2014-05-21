@@ -1,0 +1,5 @@
+h1 Nutrient Profiles
+
+ul
+  - @nutrient_profiles.each do |nutrient_profile|
+    li= link_to nutrient_profile.name, edit_nutrient_profile_path(nutrient_profile)

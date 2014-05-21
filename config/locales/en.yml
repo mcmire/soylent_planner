@@ -13,3 +13,9 @@ en:
   titles:
     ingredients:
       new: 'Add Ingredient'
+
+  helpers:
+    submit:
+      nutrient_profile:
+        create: 'Create Nutrient Profile'
+        update: 'Update Nutrient Profile'

@@ -26,4 +26,8 @@ class Ingredient < ActiveRecord::Base
 
     super
   end
+
+  def formatted_unit_for(attribute_name)
+    NutrientCollection.unit_for(attribute_name) + ' per serving'
+  end
 end

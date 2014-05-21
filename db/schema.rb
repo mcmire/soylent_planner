@@ -73,6 +73,11 @@ ActiveRecord::Schema.define(version: 20140523072124) do
     t.decimal "choline"
   end
 
+  create_table "nutrient_profiles", force: true do |t|
+    t.integer "nutrient_collection_id"
+    t.string  "name",                   null: false
+  end
+
   create_table "usda_food_groups", id: false, force: true do |t|
     t.string   "code",        null: false
     t.string   "description", null: false

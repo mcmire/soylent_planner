@@ -46,7 +46,8 @@
   = f.simple_fields_for :nutrient_collection do |ncf|
     = render 'nutrient_collections/fields',
       parent_form: f,
-      form: ncf
+      form: ncf,
+      parent_object: ingredient
 
   hr
 

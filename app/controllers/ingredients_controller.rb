@@ -8,6 +8,12 @@ class IngredientsController < ApplicationController
     @ingredient.build_nutrient_collection
   end
 
+  def new_from_usda_food
+    usda_food = UsdaFood.find(params[:usda_food_id])
+    @ingredient = Ingredient.new_from_usda_food(usda_food)
+    render :new
+  end
+
   def create
     @ingredient = Ingredient.new(ingredient_params)
 

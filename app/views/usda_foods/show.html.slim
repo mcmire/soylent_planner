@@ -1,3 +1,9 @@
 h1= @usda_food.long_description
 
+- unless Ingredient.exists?(name: @usda_food.long_description)
+  p.text-center
+    = link_to new_ingredient_from_usda_food_path(usda_food_id: @usda_food),
+      class: 'btn btn-primary' do
+      | Copy to Ingredient
+
 .usda-food= list_nutrients_for(@usda_food)

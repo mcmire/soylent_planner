@@ -3,7 +3,19 @@ class Ingredient < ActiveRecord::Base
   UNITS = %w(g ml portion pill)
 
   def self.forms; FORMS; end
+
   def self.units; UNITS; end
+
+  def self.new_from_usda_food(usda_food)
+    new do |ingredient|
+      ingredient.name = usda_food.long_description
+
+      nutrient_collection = ingredient.build_nutrient_collection
+      usda_food.ingredient_attributes.each do |attribute_name, value|
+        nutrient_collection.__send__("#{attribute_name}=", value)
+      end
+    end
+  end
 
   validates :name, :form, :unit, :container_size, presence: true
 

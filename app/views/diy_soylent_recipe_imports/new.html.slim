@@ -1,0 +1,13 @@
+h1 Import a Recipe from DIY Soylent
+
+= form_tag diy_soylent_recipe_imports_path, class: 'form-inline' do
+  .form-group
+    input.form-control.url(
+      type='text'
+      name='url'
+      placeholder='http://...'
+      value="#{@url}"
+    )
+  .form-group
+    button.btn.btn-primary(type='submit')
+      | Import

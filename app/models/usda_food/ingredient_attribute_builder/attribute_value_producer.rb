@@ -35,7 +35,16 @@ class UsdaFood::IngredientAttributeBuilder::AttributeValueProducer
 
   def nutrient_values
     foods_nutrients.map do |foods_nutrient|
-      foods_nutrient.nutrient_value
+      begin
+        from_unit = foods_nutrient.nutrient.units
+        to_unit = NutrientCollection.unit_for(attribute_name)
+        unit_converter.convert(foods_nutrient.nutrient_value,
+          from_unit: from_unit,
+          to_unit: to_unit
+        )
+      rescue ArgumentError
+        raise ArgumentError, "Don't know how to convert #{attribute_name} from #{from_unit} to #{to_unit}"
+      end
     end
   end
 

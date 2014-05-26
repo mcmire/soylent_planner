@@ -8,7 +8,8 @@
         = f.label :name, class: 'control-label col-sm-2'
         .col-sm-10
           = f.input_field :name, class: 'form-control'
-          span.help-block= f.error :name
+          - if f.error(:name).present?
+            span.help-block= f.error :name
 
   .row
     .col-sm-6= f.input :form, collection: Ingredient.forms
@@ -39,7 +40,8 @@
       = f.input :serving_size,
         as: :having_unit,
         unit: 'g',
-        wrapper: :horizontal_input_group
+        wrapper: :horizontal_input_group,
+        input_html: { placeholder: 0 }
 
   hr
 

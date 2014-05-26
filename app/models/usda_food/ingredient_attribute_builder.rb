@@ -41,7 +41,12 @@ class UsdaFood::IngredientAttributeBuilder
 
   def call
     attribute_value_producers.inject({}) do |hash, producer|
-      hash[producer.attribute_name] = producer.call
+      value = producer.call
+
+      if value > 0
+        hash[producer.attribute_name] = value
+      end
+
       hash
     end
   end

@@ -231,12 +231,21 @@
 
 .row
   .col-sm-6
+    = form.input :vitamin_d,
+      label: 'Vitamin D',
+      as: :having_unit,
+      parent_object: parent_object,
+      wrapper: :horizontal_input_group,
+      input_html: { placeholder: 0 }
+  .col-sm-6
     = form.input :vitamin_e,
       label: 'Vitamin E',
       as: :having_unit,
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
+
+.row
   .col-sm-6
     = form.input :vitamin_k,
       label: 'Vitamin K',
@@ -244,36 +253,34 @@
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
-
-.row
   .col-sm-6
     = form.input :thiamin,
       as: :having_unit,
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
+
+.row
   .col-sm-6
     = form.input :riboflavin,
       as: :having_unit,
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
-
-.row
   .col-sm-6
     = form.input :niacin,
       as: :having_unit,
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
+
+.row
   .col-sm-6
     = form.input :folate,
       as: :having_unit,
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
-
-.row
   .col-sm-6
     = form.input :pantothenic_acid,
       label: 'Panto. acid',
@@ -281,14 +288,14 @@
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
+
+.row
   .col-sm-6
     = form.input :biotin,
       as: :having_unit,
       parent_object: parent_object,
       wrapper: :horizontal_input_group,
       input_html: { placeholder: 0 }
-
-.row
   .col-sm-6
     = form.input :choline,
       as: :having_unit,

@@ -11,18 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140523072124) do
+ActiveRecord::Schema.define(version: 20140526051616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
 
   create_table "ingredients", force: true do |t|
-    t.string  "name",                                           default: "",       null: false
-    t.string  "form",                                           default: "powder", null: false
-    t.string  "unit",                                           default: "g"
-    t.integer "container_size",                                                    null: false
-    t.decimal "cost",                   precision: 2, scale: 0
+    t.string  "name",                                              default: "",       null: false
+    t.string  "form",                                              default: "powder", null: false
+    t.string  "unit",                                              default: "g"
+    t.integer "container_size",                                                       null: false
+    t.decimal "cost",                   precision: 1000, scale: 2
     t.string  "source"
     t.string  "link"
     t.integer "daily_serving"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20140523072124) do
     t.decimal "pantothenic_acid"
     t.decimal "biotin"
     t.decimal "choline"
+    t.decimal "vitamin_d"
   end
 
   create_table "nutrient_profiles", force: true do |t|

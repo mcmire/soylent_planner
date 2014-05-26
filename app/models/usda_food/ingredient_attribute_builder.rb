@@ -1,6 +1,6 @@
 class UsdaFood::IngredientAttributeBuilder
   NUTRIENT_NUMBERS_BY_INGREDIENT_ATTRIBUTE = {
-    calories: 268,
+    calories: 208,
     carbohydrates: 205,
     protein: 203,
     total_fat: 204,

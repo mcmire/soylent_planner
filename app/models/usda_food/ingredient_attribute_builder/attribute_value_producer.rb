@@ -1,8 +1,4 @@
 class UsdaFood::IngredientAttributeBuilder::AttributeValueProducer
-  EXCLUDED_NUTRIENT_NUMBERS = [
-    268 # energy, in KJ
-  ]
-
   attr_reader :attribute_name
 
   def initialize(attribute_builder, attribute_name, nutrient_numbers)
@@ -22,9 +18,7 @@ class UsdaFood::IngredientAttributeBuilder::AttributeValueProducer
   delegate :foods_nutrients_by_nutrient_number, to: :attribute_builder
 
   def copyable_nutrient_numbers
-    nutrient_numbers &
-      foods_nutrients_by_nutrient_number.keys -
-      EXCLUDED_NUTRIENT_NUMBERS
+    nutrient_numbers & foods_nutrients_by_nutrient_number.keys
   end
 
   def foods_nutrients

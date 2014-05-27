@@ -12,11 +12,22 @@
 
   hr
 
-  = f.simple_fields_for :nutrient_collection do |ncf|
-    = render 'nutrient_collections/fields',
-      parent_form: f,
-      form: ncf,
-      parent_object: nutrient_profile
+  = f.simple_fields_for :min_nutrient_collection do |min_ncf|
+    = f.simple_fields_for :max_nutrient_collection do |max_ncf|
+      .columns
+        - nutrient_collection_attributes.each do |attribute|
+          .form-group
+            label.control-label= attribute[:label]
+            = min_ncf.input attribute[:name],
+              label: false,
+              as: :having_unit,
+              parent_object: nutrient_profile,
+              wrapper: :having_unit
+            = max_ncf.input attribute[:name],
+              label: false,
+              as: :having_unit,
+              parent_object: nutrient_profile,
+              wrapper: :having_unit
 
   hr
 

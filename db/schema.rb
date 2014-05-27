@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526061547) do
+ActiveRecord::Schema.define(version: 20140527052918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,8 +78,9 @@ ActiveRecord::Schema.define(version: 20140526061547) do
   end
 
   create_table "nutrient_profiles", force: true do |t|
-    t.integer "nutrient_collection_id"
-    t.string  "name",                   null: false
+    t.string  "name",                       null: false
+    t.integer "min_nutrient_collection_id", null: false
+    t.integer "max_nutrient_collection_id", null: false
   end
 
   create_table "usda_food_groups", id: false, force: true do |t|

@@ -46,10 +46,14 @@
   hr
 
   = f.simple_fields_for :nutrient_collection do |ncf|
-    = render 'nutrient_collections/fields',
-      parent_form: f,
-      form: ncf,
-      parent_object: ingredient
+    .columns
+      - nutrient_collection_attributes.each do |attribute|
+        = ncf.input attribute[:name],
+          label: attribute[:label],
+          as: :having_unit,
+          parent_object: ingredient,
+          wrapper: :vertical_input_group,
+          input_html: { placeholder: 0 }
 
   hr
 

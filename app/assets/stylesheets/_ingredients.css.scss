@@ -1,12 +1,11 @@
-h1 {
-  margin-bottom: 1em;
-  text-align: center;
-}
+.ingredients {
+  .columns {
+    .form-control {
+      width: 80px
+    }
 
-.ingredient-form,
-.nutrient-profile-form {
-  .buttons {
-    text-align: center;
-    margin-bottom: 1em;
+    .input-group {
+      flex-basis: 180px
+    }
   }
 }

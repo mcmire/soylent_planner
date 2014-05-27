@@ -2,9 +2,15 @@
   margin: 0 auto;
 }
 
+h1 {
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+
 .container {
   @include center-align;
-  width: 850px;
+  width: 900px;
 }
 
 .columns {
@@ -28,32 +34,38 @@
       display: none;
     }
 
-    > label, .input-group {
+    label, .input-group {
       flex: 0 1 auto;
     }
 
-    > label {
+    label {
       padding-left: 20px;
       padding-right: 20px;
     }
 
     .input-group {
       flex-grow: 1;
-      width: auto;
       display: flex;
+      margin-right: 5px;
     }
 
     .form-control {
-      /*display: inline;*/
       display: block;
-      flex: 1 1 auto;
+      flex: 1 0 auto;
     }
 
     .input-group-addon {
       width: auto;
       display: inline;
-      flex: 1 0 auto;
+      flex: 0 0 auto;
       line-height: inherit;
     }
+  }
+}
+
+form {
+  .buttons {
+    text-align: center;
+    margin-bottom: 1em;
   }
 }

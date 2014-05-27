@@ -5,7 +5,8 @@ class NutrientProfilesController < ApplicationController
 
   def new
     @nutrient_profile = NutrientProfile.new
-    @nutrient_profile.build_nutrient_collection
+    @nutrient_profile.build_min_nutrient_collection
+    @nutrient_profile.build_max_nutrient_collection
   end
 
   def create
@@ -41,7 +42,8 @@ class NutrientProfilesController < ApplicationController
   def nutrient_profile_params
     params.require(:nutrient_profile).permit(
       :name,
-      nutrient_collection_attributes: nutrient_collection_attributes
+      min_nutrient_collection_attributes: nutrient_collection_attributes,
+      max_nutrient_collection_attributes: nutrient_collection_attributes
     )
   end
 

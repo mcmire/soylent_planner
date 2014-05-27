@@ -60,6 +60,6 @@ class IngredientsController < ApplicationController
   end
 
   def nutrient_collection_attributes
-    NutrientCollection.modifiable_attribute_names
+    NutrientCollection.modifiable_attribute_names + [:id]
   end
 end

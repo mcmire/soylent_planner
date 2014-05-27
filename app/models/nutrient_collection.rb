@@ -1,4 +1,49 @@
 class NutrientCollection < ActiveRecord::Base
+  MODIFIABLE_ATTRIBUTE_NAMES = [
+    :calories,
+    :carbohydrates,
+    :protein,
+    :total_fat,
+    :saturated_fat,
+    :monounsaturated_fat,
+    :polyunsaturated_fat,
+    :omega_3,
+    :omega_6,
+    :total_fiber,
+    :soluble_fiber,
+    :insoluble_fiber,
+    :cholesterol,
+    :calcium,
+    :chloride,
+    :chromium,
+    :copper,
+    :iodine,
+    :iron,
+    :magnesium,
+    :manganese,
+    :molybdenum,
+    :phosphorus,
+    :potassium,
+    :selenium,
+    :sodium,
+    :sulfur,
+    :zinc,
+    :vitamin_a,
+    :vitamin_b6,
+    :vitamin_b12,
+    :vitamin_c,
+    :vitamin_d,
+    :vitamin_e,
+    :vitamin_k,
+    :thiamin,
+    :riboflavin,
+    :niacin,
+    :folate,
+    :pantothenic_acid,
+    :biotin,
+    :choline,
+  ]
+
   UNITS_BY_ATTRIBUTE_NAME = {
     biotin: 'µg',
     calories: 'kcal',
@@ -25,12 +70,17 @@ class NutrientCollection < ActiveRecord::Base
     vitamin_k: 'µg',
     zinc: 'mg',
   }
+
   ATTRIBUTES_TO_EXCLUDE_FROM_DIGEST = [
     'id',
     'created_at',
     'updated_at',
     'digest'
   ]
+
+  def self.modifiable_attribute_names
+    MODIFIABLE_ATTRIBUTE_NAMES
+  end
 
   def self.unit_for(attribute_name)
     UNITS_BY_ATTRIBUTE_NAME.fetch(attribute_name, 'g')

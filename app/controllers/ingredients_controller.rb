@@ -55,51 +55,11 @@ class IngredientsController < ApplicationController
       :link,
       :daily_serving,
       :serving_size,
-      nutrient_collection_attributes: [
-        :id,
-        :calories,
-        :carbohydrates,
-        :protein,
-        :total_fat,
-        :saturated_fat,
-        :monounsaturated_fat,
-        :polyunsaturated_fat,
-        :omega_3,
-        :omega_6,
-        :total_fiber,
-        :soluble_fiber,
-        :insoluble_fiber,
-        :cholesterol,
-        :calcium,
-        :chloride,
-        :chromium,
-        :copper,
-        :iodine,
-        :iron,
-        :magnesium,
-        :manganese,
-        :molybdenum,
-        :phosphorus,
-        :potassium,
-        :selenium,
-        :sodium,
-        :sulfur,
-        :zinc,
-        :vitamin_a,
-        :vitamin_b6,
-        :vitamin_b12,
-        :vitamin_c,
-        :vitamin_d,
-        :vitamin_e,
-        :vitamin_k,
-        :thiamin,
-        :riboflavin,
-        :niacin,
-        :folate,
-        :pantothenic_acid,
-        :biotin,
-        :choline,
-      ]
+      nutrient_collection_attributes: nutrient_collection_attributes
     )
+  end
+
+  def nutrient_collection_attributes
+    NutrientCollection.modifiable_attribute_names
   end
 end

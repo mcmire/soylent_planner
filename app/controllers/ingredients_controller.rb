@@ -1,6 +1,6 @@
 class IngredientsController < ApplicationController
   def index
-    @ingredients = Ingredient.order(:name)
+    @ingredients = Ingredient.order('LOWER(name)')
   end
 
   def new

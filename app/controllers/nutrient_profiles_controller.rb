@@ -12,7 +12,7 @@ class NutrientProfilesController < ApplicationController
     @nutrient_profile = NutrientProfile.new(nutrient_profile_params)
 
     if @nutrient_profile.save
-      flash[:success] = 'Nutrient profile created'
+      flash[:success] = 'Nutrient profile created successfully.'
       redirect_to action: :index
     else
       render :new
@@ -29,7 +29,7 @@ class NutrientProfilesController < ApplicationController
     @nutrient_profile.assign_attributes(nutrient_profile_params)
 
     if @nutrient_profile.save
-      flash[:success] = 'Nutrient profile updated'
+      flash[:success] = 'Nutrient profile updated successfully.'
       redirect_to action: :index
     else
       render :edit

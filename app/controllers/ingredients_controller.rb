@@ -18,7 +18,7 @@ class IngredientsController < ApplicationController
     @ingredient = Ingredient.new(ingredient_params)
 
     if @ingredient.save
-      flash[:success] = 'Nutrient profile created'
+      flash[:success] = 'Ingredient created successfully.'
       redirect_to action: :index
     else
       render :new
@@ -35,7 +35,7 @@ class IngredientsController < ApplicationController
     @ingredient.assign_attributes(ingredient_params)
 
     if @ingredient.save
-      flash[:success] = 'Nutrient profile updated'
+      flash[:success] = 'Ingredient updated successfully.'
       redirect_to action: :index
     else
       render :new

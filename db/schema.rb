@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140526051616) do
+ActiveRecord::Schema.define(version: 20140526061547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 20140526051616) do
     t.integer "daily_serving"
     t.integer "serving_size"
     t.integer "nutrient_collection_id"
+    t.string  "digest",                                                               null: false
   end
 
   create_table "nutrient_collections", force: true do |t|
@@ -73,6 +74,7 @@ ActiveRecord::Schema.define(version: 20140526051616) do
     t.decimal "biotin"
     t.decimal "choline"
     t.decimal "vitamin_d"
+    t.string  "digest",              null: false
   end
 
   create_table "nutrient_profiles", force: true do |t|

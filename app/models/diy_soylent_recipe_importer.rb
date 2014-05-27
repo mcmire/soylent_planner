@@ -1,5 +1,6 @@
 class DiySoylentRecipeImporter
-  attr_reader :new_ingredients, :existing_ingredients, :valid_ingredients, :invalid_ingredients
+  attr_reader :new_ingredients, :existing_ingredients, :valid_ingredients,
+    :invalid_ingredients
 
   def initialize(url)
     @url = url + '/json'
@@ -46,7 +47,7 @@ class DiySoylentRecipeImporter
 
   def new_and_existing_ingredients
     built_ingredients.partition do |ingredient|
-      !Ingredient.exists?(name: ingredient.name)
+      !Ingredient.exists?(digest: ingredient.calculated_digest)
     end
   end
 

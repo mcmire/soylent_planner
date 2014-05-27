@@ -6,3 +6,54 @@
   @include center-align;
   width: 850px;
 }
+
+.columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-left: -20px;
+
+  .form-group {
+    flex: 1 1 auto;
+    display: flex;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 20px;
+
+    &:before {
+      display: none;
+    }
+
+    &:after {
+      display: none;
+    }
+
+    > label, .input-group {
+      flex: 0 1 auto;
+    }
+
+    > label {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .input-group {
+      flex-grow: 1;
+      width: auto;
+      display: flex;
+    }
+
+    .form-control {
+      /*display: inline;*/
+      display: block;
+      flex: 1 1 auto;
+    }
+
+    .input-group-addon {
+      width: auto;
+      display: inline;
+      flex: 1 0 auto;
+      line-height: inherit;
+    }
+  }
+}

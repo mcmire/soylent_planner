@@ -75,6 +75,7 @@ class NutrientProfilesController < ApplicationController
         :vitamin_b6,
         :vitamin_b12,
         :vitamin_c,
+        :vitamin_d,
         :vitamin_e,
         :vitamin_k,
         :thiamin,

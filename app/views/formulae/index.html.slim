@@ -1,0 +1,24 @@
+h1 Formulae
+
+- @formulae.each do |formula|
+  table.table.table-bordered
+    thead
+      tr
+        th name
+        th serving_size
+        - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
+          th
+            = "#{attribute_name} (#{NutrientCollection.unit_for(attribute_name)})"
+    tbody
+      - formula.ingredients.each do |ingredient|
+        tr
+          td= ingredient.name
+          td= "#{ingredient.daily_serving.round(2)} #{ingredient.unit}"
+          - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
+            td
+              - nutrient =ingredient.nutrients_by_name[attribute_name]
+              - if nutrient
+                - nutrient_value = nutrient.value
+                = (ingredient.factor * nutrient_value).round(2)
+              - else
+                = 0.0

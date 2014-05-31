@@ -1,6 +1,6 @@
-h1 Formulae
+h1 Recipes
 
-- @formulae.each do |formula|
+- @recipes.each do |recipe|
   table.table.table-bordered
     thead
       tr
@@ -10,9 +10,9 @@ h1 Formulae
           th
             = "#{attribute_name} (#{NutrientCollection.unit_for(attribute_name)})"
     tbody
-      - formula.ingredients.each do |ingredient|
+      - recipe.ingredients.each do |ingredient|
         tr
-          td= ingredient.name
+          th= ingredient.name
           td= "#{ingredient.daily_serving.round(2)} #{ingredient.unit}"
           - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
             td
@@ -22,3 +22,13 @@ h1 Formulae
                 = (ingredient.factor * nutrient_value).round(2)
               - else
                 = 0.0
+      tr
+        th Min target
+        td
+        - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
+          td= @nutrient_profile.min_nutrient_collection.__send__(attribute_name)
+      tr
+        th Max target
+        td
+        - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
+          td= @nutrient_profile.max_nutrient_collection.__send__(attribute_name)

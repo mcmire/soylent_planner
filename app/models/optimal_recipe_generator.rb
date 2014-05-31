@@ -1,4 +1,4 @@
-class FormulaGenerator
+class OptimalRecipeGenerator
   def self.call(options = {})
     new(options).call
   end
@@ -8,7 +8,7 @@ class FormulaGenerator
     @ingredients = ingredients.to_a.map do |ingredient|
       Ingredient.new(ingredient)
     end
-    @formula = Formula.new
+    @recipe = Recipe.new
   end
 
   def call
@@ -18,7 +18,7 @@ class FormulaGenerator
       end
 
       nutrient_profile_nutrient = nutrient_profile.nutrients_by_name[nutrient_name]
-      nutrient_total_value = formula.nutrient_total_values_by_name[nutrient_name]
+      nutrient_total_value = recipe.nutrient_total_values_by_name[nutrient_name]
       effective_max_value = (
         nutrient_profile_nutrient.max_value -
         nutrient_total_value
@@ -61,19 +61,19 @@ class FormulaGenerator
            percentage: ingredient_closest_to_limit[2].to_f.round(2),
            calculated_daily_serving: calculated_daily_serving.to_f.round(2)
 
-        formula.add_ingredient(found_ingredient, calculated_daily_serving)
+        recipe.add_ingredient(found_ingredient, calculated_daily_serving)
         ingredients.delete(found_ingredient)
       end
     end
 
-    formula
+    recipe
   end
 
   private
 
-  attr_reader :nutrient_profile, :ingredients, :formula
+  attr_reader :nutrient_profile, :ingredients, :recipe
 
-  class Formula
+  class Recipe
     attr_reader :ingredients, :nutrient_total_values_by_name
 
     def initialize
@@ -82,9 +82,9 @@ class FormulaGenerator
     end
 
     def add_ingredient(ingredient, serving_size)
-      formula_ingredient = FormulaIngredient.new(ingredient, serving_size)
-      ingredients << formula_ingredient
-      increment_totals_for_nutrients_in(formula_ingredient)
+      recipe_ingredient = RecipeIngredient.new(ingredient, serving_size)
+      ingredients << recipe_ingredient
+      increment_totals_for_nutrients_in(recipe_ingredient)
     end
 
     private
@@ -96,7 +96,7 @@ class FormulaGenerator
     end
   end
 
-  class FormulaIngredient < SimpleDelegator
+  class RecipeIngredient < SimpleDelegator
     attr_reader :daily_serving
 
     def initialize(ingredient, daily_serving)

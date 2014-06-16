@@ -43,6 +43,8 @@ module ApplicationHelper
   end
 
   def percentage(number)
-    "#{(number * 100).round(2)}%"
+    if number
+      "#{(number * 100).round(2)}%"
+    end
   end
 end

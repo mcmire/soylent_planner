@@ -1,5 +1,5 @@
 class OptimalRecipeGenerator
-  def self.limit; 4; end
+  def self.limit; 5; end
 
   def self.generate(options = {})
     generator = new(options)
@@ -89,17 +89,21 @@ class OptimalRecipeGenerator
   end
 
   def build_constraints
-    nutrients[0...self.class.limit].map do |nutrient|
+    nutrients[0...self.class.limit].inject([]) do |constraints, nutrient|
       coefficients = nutrient.ingredient_values
       min_value = nutrient.min_value.to_s.to_r
       max_value = nutrient.max_value.to_s.to_r
 
-      #puts "Total #{nutrient.name} must be between #{min_value} and #{max_value}"
+      if min_value.to_f > 0 && max_value.to_f > 0
+        constraints << {
+          coefficients: coefficients,
+          range: [min_value, max_value]
+        }
+      elsif max_value.to_f > 0
+        raise "#{nutrient.name}'s max_value is 0 or undefined"
+      end
 
-      {
-        coefficients: coefficients,
-        range: (min_value .. max_value)
-      }
+      constraints
     end
   end
 
@@ -128,11 +132,11 @@ class OptimalRecipeGenerator
 
   class NutrientProfile < SimpleDelegator
     def min_value_for_nutrient(nutrient_name)
-      min_nutrient_collection.__send__(nutrient_name).to_f
+      min_nutrient_collection.__send__(nutrient_name)
     end
 
     def max_value_for_nutrient(nutrient_name)
-      max_nutrient_collection.__send__(nutrient_name).to_f
+      max_nutrient_collection.__send__(nutrient_name)
     end
   end
 
@@ -205,7 +209,14 @@ class OptimalRecipeGenerator
     def percent_reached_for_nutrient(nutrient_name)
       total = total_for_nutrient(nutrient_name)
       max = nutrient_profile.max_value_for_nutrient(nutrient_name)
-      total / max
+
+      if max
+        if max == 0
+          0
+        else
+          total / max
+        end
+      end
     end
   end
 

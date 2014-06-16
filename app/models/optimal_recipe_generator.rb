@@ -1,5 +1,5 @@
 class OptimalRecipeGenerator
-  def self.limit; 3; end
+  def self.limit; 4; end
 
   def self.generate(options = {})
     generator = new(options)
@@ -19,7 +19,7 @@ class OptimalRecipeGenerator
     @nutrients = build_nutrients(@nutrient_profile, @ingredients)
     @objective_coefficients = build_objective_coefficients
     @constraints = build_constraints
-    pp constraints: constraints
+    #pp constraints: constraints
   end
 
   def generate
@@ -35,16 +35,19 @@ class OptimalRecipeGenerator
   def lower_constraints!
     constraints.each do |constraint|
       start_value = constraint[:range].first
-      new_start_value = start_value - 10
-      end_value = constraint[:range].last
 
-      if new_start_value < 0
-        raise "Can't lower min value below 0"
+      if start_value
+        start_value -= 10
+
+        if start_value < 0
+          start_value = nil
+        end
       end
 
-      constraint[:range] = (new_start_value .. end_value)
+      end_value = constraint[:range].last
+
+      constraint[:range] = [start_value, end_value]
     end
-    #pp constraints: constraints
   end
 
   private
@@ -56,21 +59,25 @@ class OptimalRecipeGenerator
       p.objective_coefficients = objective_coefficients
 
       constraints.each do |constraint|
-        p.add_constraint(
-          coefficients: constraint[:coefficients],
-          operator: :>=,
-          rhs_value: constraint[:range].first
-        )
+        if constraint[:range].first
+          p.add_constraint(
+            coefficients: constraint[:coefficients],
+            operator: :>=,
+            rhs_value: constraint[:range].first
+          )
+        end
 
-        p.add_constraint(
-          coefficients: constraint[:coefficients],
-          operator: :<=,
-          rhs_value: constraint[:range].last
-        )
+        if constraint[:range].last
+          p.add_constraint(
+            coefficients: constraint[:coefficients],
+            operator: :<=,
+            rhs_value: constraint[:range].last
+          )
+        end
       end
     end
 
-    problem.debug!
+    #problem.debug!
 
     problem
   end
@@ -183,6 +190,10 @@ class OptimalRecipeGenerator
              #daily_serving: recipe_ingredient.daily_serving
         end
       end
+    end
+
+    def total_cost
+      ingredients.sum(&:cost)
     end
 
     def total_for_nutrient(nutrient_name)

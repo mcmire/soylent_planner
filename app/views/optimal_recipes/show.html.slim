@@ -1,5 +1,3 @@
-- limited_nutrient_names = nutrient_names[0...OptimalRecipeGenerator.limit]
-
 h1 Optimal Recipe
 
 - if @recipe
@@ -10,7 +8,7 @@ h1 Optimal Recipe
         th Daily serving
         th Cost
         th Container size
-        - limited_nutrient_names.each do |attribute_name|
+        - nutrient_names.each do |attribute_name|
           th
             = "#{attribute_name} (#{unit_for(attribute_name)})"
     tbody
@@ -20,35 +18,35 @@ h1 Optimal Recipe
           td= "#{ingredient.daily_serving.to_f.round(2)} #{ingredient.unit}"
           td= number_to_currency ingredient.cost
           td= "#{ingredient.container_size} #{ingredient.unit}"
-          - limited_nutrient_names.each do |nutrient_name|
+          - nutrient_names.each do |nutrient_name|
             td= ingredient.multiplied_value_for_nutrient(nutrient_name)
       tr
         th Total
         td
         td= number_to_currency @recipe.total_cost
         td
-          - limited_nutrient_names.each do |nutrient_name|
+          - nutrient_names.each do |nutrient_name|
             td= @recipe.total_for_nutrient(nutrient_name).round(2)
       tr
         th Min target
         td
         td
         td
-        - limited_nutrient_names.each do |nutrient_name|
+        - nutrient_names.each do |nutrient_name|
           td= @recipe.nutrient_profile.min_value_for_nutrient(nutrient_name)
       tr
         th Max target
         td
         td
         td
-        - limited_nutrient_names.each do |nutrient_name|
+        - nutrient_names.each do |nutrient_name|
           td= @recipe.nutrient_profile.max_value_for_nutrient(nutrient_name)
       tr
         th % reached
         td
         td
         td
-        - limited_nutrient_names.each do |nutrient_name|
+        - nutrient_names.each do |nutrient_name|
           td= percentage @recipe.percent_reached_for_nutrient(nutrient_name)
 - else
   p No optimal recipe exists.

@@ -4,7 +4,10 @@ class OptimalRecipesController < ApplicationController
       includes(:min_nutrient_collection, :max_nutrient_collection).
       find(params[:nutrient_profile_id])
 
-    ingredients = Ingredient.includes(:nutrient_collection)
+    #ingredients = Ingredient.includes(:nutrient_collection)
+    ingredients = Ingredient.
+      where(id: [250, 251]).
+      includes(:nutrient_collection)
 
     @recipe = OptimalRecipeGenerator.generate(
       nutrient_profile: nutrient_profile,

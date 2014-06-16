@@ -1,6 +1,4 @@
 class OptimalRecipeGenerator
-  def self.limit; 5; end
-
   def self.generate(options = {})
     generator = new(options)
 
@@ -59,7 +57,10 @@ class OptimalRecipeGenerator
       p.objective_coefficients = objective_coefficients
 
       constraints.each do |constraint|
-        if constraint[:range].first
+        a_coefficient_is_more_than_zero =
+          constraint[:coefficients].any? { |value| value > 0 }
+
+        if constraint[:range].first && a_coefficient_is_more_than_zero
           p.add_constraint(
             coefficients: constraint[:coefficients],
             operator: :>=,
@@ -67,7 +68,7 @@ class OptimalRecipeGenerator
           )
         end
 
-        if constraint[:range].last
+        if constraint[:range].last && a_coefficient_is_more_than_zero
           p.add_constraint(
             coefficients: constraint[:coefficients],
             operator: :<=,
@@ -89,7 +90,7 @@ class OptimalRecipeGenerator
   end
 
   def build_constraints
-    nutrients[0...self.class.limit].inject([]) do |constraints, nutrient|
+    nutrients.inject([]) do |constraints, nutrient|
       coefficients = nutrient.ingredient_values
       min_value = nutrient.min_value.to_s.to_r
       max_value = nutrient.max_value.to_s.to_r
@@ -99,7 +100,7 @@ class OptimalRecipeGenerator
           coefficients: coefficients,
           range: [min_value, max_value]
         }
-      elsif max_value.to_f > 0
+      elsif max_value.to_f < 0
         raise "#{nutrient.name}'s max_value is 0 or undefined"
       end
 
@@ -112,12 +113,12 @@ class OptimalRecipeGenerator
   end
 
   def build_ingredients(ingredients)
-    ingredients[0...self.class.limit].map { |ingredient| Ingredient.new(ingredient) }
+    ingredients.map { |ingredient| Ingredient.new(ingredient) }
   end
 
   def build_nutrients(nutrient_profile, ingredients)
-    NutrientCollection.modifiable_attribute_names[0...self.class.limit].map do |nutrient_name|
-      ingredient_values = ingredients[0...self.class.limit].map do |ingredient|
+    NutrientCollection.modifiable_attribute_names.map do |nutrient_name|
+      ingredient_values = ingredients.map do |ingredient|
         ingredient.normalized_value_for_nutrient(nutrient_name).round(2).to_s.to_r
       end
 

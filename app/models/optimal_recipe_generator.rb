@@ -1,38 +1,78 @@
 class OptimalRecipeGenerator
-  def self.limit; 2; end
+  def self.limit; 3; end
 
-  def self.call(options = {})
-    new(options).call
+  def self.generate(options = {})
+    generator = new(options)
+
+    until recipe = generator.generate
+      generator.lower_constraints!
+    end
+
+    recipe
   end
 
-  attr_reader :nutrient_profile, :ingredients, :nutrients
+  attr_reader :nutrient_profile, :ingredients, :nutrients, :recipe
 
   def initialize(nutrient_profile:, ingredients:)
     @nutrient_profile = build_nutrient_profile(nutrient_profile)
     @ingredients = build_ingredients(ingredients)
     @nutrients = build_nutrients(@nutrient_profile, @ingredients)
-    @simplex_problem = build_simplex_problem
+    @objective_coefficients = build_objective_coefficients
+    @constraints = build_constraints
+    pp constraints: constraints
   end
 
-  def call
-    simplex_problem.debug!
-    solution = simplex_problem.solve
-    pp solution: solution
-    Recipe.new(nutrient_profile, ingredients, solution)
+  def generate
+    simplex_problem = build_simplex_problem
+
+    begin
+      solution = simplex_problem.solve
+      Recipe.new(nutrient_profile, ingredients, solution)
+    rescue Simplex::UnboundedProblem
+    end
+  end
+
+  def lower_constraints!
+    constraints.each do |constraint|
+      start_value = constraint[:range].first
+      new_start_value = start_value - 10
+      end_value = constraint[:range].last
+
+      if new_start_value < 0
+        raise "Can't lower min value below 0"
+      end
+
+      constraint[:range] = (new_start_value .. end_value)
+    end
+    #pp constraints: constraints
   end
 
   private
 
-  attr_reader :simplex_problem
+  attr_reader :objective_coefficients, :constraints, :simplex_problem
 
   def build_simplex_problem
-    Simplex.minimization_problem do |p|
-      p.objective_coefficients = build_objective_coefficients
+    problem = Simplex.minimization_problem do |p|
+      p.objective_coefficients = objective_coefficients
 
-      build_constraints.each do |constraint|
-        p.add_constraint(constraint)
+      constraints.each do |constraint|
+        p.add_constraint(
+          coefficients: constraint[:coefficients],
+          operator: :>=,
+          rhs_value: constraint[:range].first
+        )
+
+        p.add_constraint(
+          coefficients: constraint[:coefficients],
+          operator: :<=,
+          rhs_value: constraint[:range].last
+        )
       end
     end
+
+    problem.debug!
+
+    problem
   end
 
   def build_objective_coefficients
@@ -42,29 +82,18 @@ class OptimalRecipeGenerator
   end
 
   def build_constraints
-    rows = []
-
-    nutrients[0...self.class.limit].each do |nutrient|
+    nutrients[0...self.class.limit].map do |nutrient|
       coefficients = nutrient.ingredient_values
       min_value = nutrient.min_value.to_s.to_r
       max_value = nutrient.max_value.to_s.to_r
 
-      rows << {
-        coefficients: coefficients,
-        operator: :>=,
-        rhs_value: min_value
-      }
+      #puts "Total #{nutrient.name} must be between #{min_value} and #{max_value}"
 
-      rows << {
+      {
         coefficients: coefficients,
-        operator: :<=,
-        rhs_value: max_value
+        range: (min_value .. max_value)
       }
-
-      puts "Total #{nutrient.name} must be between #{min_value} and #{max_value}"
     end
-
-    rows
   end
 
   def build_nutrient_profile(nutrient_profile)
@@ -119,13 +148,13 @@ class OptimalRecipeGenerator
 
     def normalized_value_for_nutrient(nutrient_name)
       normalized_value = (value_for_nutrient(nutrient_name) / container_size).to_f
-      puts "#{name} has #{value_for_nutrient(nutrient_name)} #{NutrientCollection.unit_for(nutrient_name)} of #{nutrient_name};\n  its container size is #{container_size} #{unit} which means the normalized value is #{normalized_value}"
+      #puts "#{name} has #{value_for_nutrient(nutrient_name)} #{NutrientCollection.unit_for(nutrient_name)} of #{nutrient_name};\n  its container size is #{container_size} #{unit} which means the normalized value is #{normalized_value}"
       normalized_value
     end
 
     def normalized_cost
       normalized_cost = (cost / container_size).to_f
-      puts "#{name} costs $#{cost};\n  its container size is #{container_size} #{unit} which means the normalized cost is $#{normalized_cost}"
+      #puts "#{name} costs $#{cost};\n  its container size is #{container_size} #{unit} which means the normalized cost is $#{normalized_cost}"
       normalized_cost
     end
   end
@@ -146,12 +175,12 @@ class OptimalRecipeGenerator
 
     def initialize(nutrient_profile, ingredients, ingredient_amounts)
       @nutrient_profile = nutrient_profile
-      pp ingredient_amounts: ingredient_amounts
+      #pp ingredient_amounts: ingredient_amounts
       @ingredients = ingredients.zip(ingredient_amounts).map do |ingredient, ingredient_amount|
         RecipeIngredient.new(ingredient).tap do |recipe_ingredient|
           recipe_ingredient.daily_serving = ingredient_amount
-          pp ingredient_name: recipe_ingredient.name,
-             daily_serving: recipe_ingredient.daily_serving
+          #pp ingredient_name: recipe_ingredient.name,
+             #daily_serving: recipe_ingredient.daily_serving
         end
       end
     end

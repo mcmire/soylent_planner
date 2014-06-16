@@ -6,7 +6,7 @@ class OptimalRecipesController < ApplicationController
 
     ingredients = Ingredient.includes(:nutrient_collection)
 
-    @recipe = OptimalRecipeGenerator.call(
+    @recipe = OptimalRecipeGenerator.generate(
       nutrient_profile: nutrient_profile,
       ingredients: ingredients
     )

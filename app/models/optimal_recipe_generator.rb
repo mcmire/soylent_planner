@@ -1,54 +1,67 @@
-require 'matrix'
-
 class OptimalRecipeGenerator
+  def self.limit; 2; end
+
   def self.call(options = {})
     new(options).call
   end
+
+  attr_reader :nutrient_profile, :ingredients, :nutrients
 
   def initialize(nutrient_profile:, ingredients:)
     @nutrient_profile = build_nutrient_profile(nutrient_profile)
     @ingredients = build_ingredients(ingredients)
     @nutrients = build_nutrients(@nutrient_profile, @ingredients)
-    @tableau = Tableau.new([build_maximization_row] + build_constraint_rows)
+    @simplex_problem = build_simplex_problem
   end
 
   def call
-    solution = tableau.maximize
+    simplex_problem.debug!
+    solution = simplex_problem.solve
     pp solution: solution
-    solution
+    Recipe.new(nutrient_profile, ingredients, solution)
   end
 
   private
 
-  attr_reader :nutrient_profile, :ingredients, :nutrients, :tableau
+  attr_reader :simplex_problem
 
-  def build_maximization_row
-    normalized_ingredient_costs = ingredients.map do |ingredient|
-      -ingredient.normalized_cost
+  def build_simplex_problem
+    Simplex.minimization_problem do |p|
+      p.objective_coefficients = build_objective_coefficients
+
+      build_constraints.each do |constraint|
+        p.add_constraint(constraint)
+      end
     end
-
-    Row.new(
-      lhs: normalized_ingredient_costs,
-      rhs: 0,
-      slack_variable: -1
-    )
   end
 
-  def build_constraint_rows
+  def build_objective_coefficients
+    ingredients.map do |ingredient|
+      ingredient.normalized_cost.round(2).to_s.to_r
+    end
+  end
+
+  def build_constraints
     rows = []
 
-    nutrients[0..3].each do |nutrient|
-      pp nutrient_name: nutrient.name
-      rows << Row.new(
-        lhs: nutrient.ingredient_values,
-        rhs: nutrient.min_value,
-        slack_variable: -1
-      )
-      rows << Row.new(
-        lhs: nutrient.ingredient_values,
-        rhs: nutrient.max_value,
-        slack_variable: 1
-      )
+    nutrients[0...self.class.limit].each do |nutrient|
+      coefficients = nutrient.ingredient_values
+      min_value = nutrient.min_value.to_s.to_r
+      max_value = nutrient.max_value.to_s.to_r
+
+      rows << {
+        coefficients: coefficients,
+        operator: :>=,
+        rhs_value: min_value
+      }
+
+      rows << {
+        coefficients: coefficients,
+        operator: :<=,
+        rhs_value: max_value
+      }
+
+      puts "Total #{nutrient.name} must be between #{min_value} and #{max_value}"
     end
 
     rows
@@ -59,17 +72,13 @@ class OptimalRecipeGenerator
   end
 
   def build_ingredients(ingredients)
-    ingredients[0..2].map { |ingredient| Ingredient.new(ingredient) }
+    ingredients[0...self.class.limit].map { |ingredient| Ingredient.new(ingredient) }
   end
 
   def build_nutrients(nutrient_profile, ingredients)
-    NutrientCollection.modifiable_attribute_names[0..3].map do |nutrient_name|
-      ingredient_values = ingredients[0..2].map do |ingredient|
-        value = ingredient.normalized_value_for_nutrient(nutrient_name)
-        pp ingredient_name: ingredient.name,
-           nutrient_name: nutrient_name,
-           value: value
-        value
+    NutrientCollection.modifiable_attribute_names[0...self.class.limit].map do |nutrient_name|
+      ingredient_values = ingredients[0...self.class.limit].map do |ingredient|
+        ingredient.normalized_value_for_nutrient(nutrient_name).round(2).to_s.to_r
       end
 
       Nutrient.new(
@@ -78,59 +87,6 @@ class OptimalRecipeGenerator
         max_value: nutrient_profile.max_value_for_nutrient(nutrient_name),
         ingredient_values: ingredient_values
       )
-    end
-  end
-
-  class Tableau
-    def initialize(rows)
-      @rows = rows
-      @number_of_slack_variables = calculate_number_of_slack_variables
-      @row_length = calculate_row_length
-      @simplex_matrix = Matrix[*build_tableau].extend(Simplex)
-    end
-
-    def maximize
-      simplex_matrix.maximize
-    end
-
-    private
-
-    attr_reader :rows, :number_of_slack_variables, :row_length, :simplex_matrix
-
-    def build_tableau
-      rows.map.with_index do |row, index|
-        new_row = Array.new(row_length, 0)
-        new_row[0...row.lhs.size] = row.lhs
-        new_row[row.lhs.size + index] = row.slack_variable
-        new_row[-1] = row.rhs
-        new_row
-      end.tap do |tableau|
-        pp tableau: tableau
-      end
-    end
-
-    def calculate_number_of_slack_variables
-      rows.select(&:has_slack_variable?).size
-    end
-
-    def calculate_row_length
-      rows.
-        map { |row| row.lhs.size + number_of_slack_variables + 1 }.
-        max
-    end
-  end
-
-  class Row
-    attr_reader :lhs, :rhs, :slack_variable
-
-    def initialize(lhs:, rhs:, slack_variable:)
-      @lhs = lhs
-      @rhs = rhs
-      @slack_variable = slack_variable
-    end
-
-    def has_slack_variable?
-      !!slack_variable
     end
   end
 
@@ -162,11 +118,15 @@ class OptimalRecipeGenerator
     end
 
     def normalized_value_for_nutrient(nutrient_name)
-      (value_for_nutrient(nutrient_name) / serving_size).to_f
+      normalized_value = (value_for_nutrient(nutrient_name) / container_size).to_f
+      puts "#{name} has #{value_for_nutrient(nutrient_name)} #{NutrientCollection.unit_for(nutrient_name)} of #{nutrient_name};\n  its container size is #{container_size} #{unit} which means the normalized value is #{normalized_value}"
+      normalized_value
     end
 
     def normalized_cost
-      (cost / container_size).to_f
+      normalized_cost = (cost / container_size).to_f
+      puts "#{name} costs $#{cost};\n  its container size is #{container_size} #{unit} which means the normalized cost is $#{normalized_cost}"
+      normalized_cost
     end
   end
 
@@ -178,6 +138,48 @@ class OptimalRecipeGenerator
       @min_value = min_value
       @max_value = max_value
       @ingredient_values = ingredient_values
+    end
+  end
+
+  class Recipe
+    attr_reader :nutrient_profile, :ingredients
+
+    def initialize(nutrient_profile, ingredients, ingredient_amounts)
+      @nutrient_profile = nutrient_profile
+      pp ingredient_amounts: ingredient_amounts
+      @ingredients = ingredients.zip(ingredient_amounts).map do |ingredient, ingredient_amount|
+        RecipeIngredient.new(ingredient).tap do |recipe_ingredient|
+          recipe_ingredient.daily_serving = ingredient_amount
+          pp ingredient_name: recipe_ingredient.name,
+             daily_serving: recipe_ingredient.daily_serving
+        end
+      end
+    end
+
+    def total_for_nutrient(nutrient_name)
+      ingredients.sum do |ingredient|
+        ingredient.multiplied_value_for_nutrient(nutrient_name)
+      end
+    end
+
+    def percent_reached_for_nutrient(nutrient_name)
+      total = total_for_nutrient(nutrient_name)
+      max = nutrient_profile.max_value_for_nutrient(nutrient_name)
+      total / max
+    end
+  end
+
+  class RecipeIngredient < SimpleDelegator
+    attr_accessor :daily_serving
+
+    def multiplied_value_for_nutrient(nutrient_name)
+      nutrient_value = normalized_value_for_nutrient(nutrient_name)
+
+      if daily_serving && nutrient_value > 0
+        (daily_serving * nutrient_value).round(2)
+      else
+        0
+      end
     end
   end
 end

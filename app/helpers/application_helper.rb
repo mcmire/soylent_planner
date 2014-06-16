@@ -20,7 +20,7 @@ module ApplicationHelper
   end
 
   def nutrient_collection_attributes
-    NutrientCollection.modifiable_attribute_names.map do |attribute_name|
+    nutrient_names.map do |attribute_name|
       {
         name: attribute_name,
         label: nutrient_label_for(attribute_name)
@@ -32,5 +32,17 @@ module ApplicationHelper
     NUTRIENT_COLLECTION_LABELS.fetch(attribute_name) do
       attribute_name.to_s.humanize
     end
+  end
+
+  def nutrient_names
+    NutrientCollection.modifiable_attribute_names
+  end
+
+  def unit_for(nutrient_name)
+    NutrientCollection.unit_for(nutrient_name)
+  end
+
+  def percentage(number)
+    "#{(number * 100).round(2)}%"
   end
 end

@@ -8,6 +8,11 @@ GIT
       faraday
       rubyzip
 
+PATH
+  remote: ~/code/github/forks/simplex
+  specs:
+    simplex (1.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -82,10 +87,6 @@ GEM
     kaminari (0.15.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
-    lograge (0.3.0)
-      actionpack (>= 3)
-      activesupport (>= 3)
-      railties (>= 3)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -122,7 +123,6 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.1.1)
       sprockets-rails (~> 2.0)
-    rails_stdout_logging (0.0.3)
     railties (4.1.1)
       actionpack (= 4.1.1)
       activesupport (= 4.1.1)
@@ -188,17 +188,16 @@ DEPENDENCIES
   http
   jquery-rails
   kaminari
-  lograge
   pg
   pg_search
   pry-rails
   puma
   rack-timeout
   rails (~> 4.1.0)
-  rails_stdout_logging
   recipient_interceptor
   sass-rails (~> 4.0.3)
   simple_form (= 3.1.0.rc1)
+  simplex!
   slim
   spring
   spring-commands-rspec

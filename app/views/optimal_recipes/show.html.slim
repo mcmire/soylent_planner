@@ -1,34 +1,35 @@
+- limited_nutrient_names = nutrient_names[0...OptimalRecipeGenerator.limit]
+
 h1 Recipes
 
-- @recipes.each do |recipe|
-  table.table.table-bordered
-    thead
+table.table.table-bordered
+  thead
+    tr
+      th name
+      th daily serving
+      - limited_nutrient_names.each do |attribute_name|
+        th
+          = "#{attribute_name} (#{unit_for(attribute_name)})"
+  tbody
+    - @recipe.ingredients.each do |ingredient|
       tr
-        th name
-        th serving_size
-        - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
-          th
-            = "#{attribute_name} (#{NutrientCollection.unit_for(attribute_name)})"
-    tbody
-      - recipe.ingredients.each do |ingredient|
-        tr
-          th= ingredient.name
-          td= "#{ingredient.daily_serving.round(2)} #{ingredient.unit}"
-          - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
-            td
-              - nutrient =ingredient.nutrients_by_name[attribute_name]
-              - if nutrient
-                - nutrient_value = nutrient.value
-                = (ingredient.factor * nutrient_value).round(2)
-              - else
-                = 0.0
-      tr
-        th Min target
-        td
-        - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
-          td= @nutrient_profile.min_nutrient_collection.__send__(attribute_name)
-      tr
-        th Max target
-        td
-        - NutrientCollection.modifiable_attribute_names.each do |attribute_name|
-          td= @nutrient_profile.max_nutrient_collection.__send__(attribute_name)
+        th= ingredient.name
+        td= "#{ingredient.daily_serving.to_f.round(2)} #{ingredient.unit}"
+        - limited_nutrient_names.each do |nutrient_name|
+          td= ingredient.multiplied_value_for_nutrient(nutrient_name)
+
+    tr
+      th Min target
+      td
+        - limited_nutrient_names.each do |nutrient_name|
+          td= @recipe.nutrient_profile.min_value_for_nutrient(nutrient_name)
+    tr
+      th Max target
+      td
+        - limited_nutrient_names.each do |nutrient_name|
+          td= @recipe.nutrient_profile.max_value_for_nutrient(nutrient_name)
+    tr
+      th % reached
+      td
+        - limited_nutrient_names.each do |nutrient_name|
+          td= percentage @recipe.percent_reached_for_nutrient(nutrient_name)

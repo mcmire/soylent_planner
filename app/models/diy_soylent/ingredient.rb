@@ -1,6 +1,14 @@
 module DiySoylent
   class Ingredient
-    EXCLUDED_ATTRIBUTES = [:_id, :id, :currency, :asin, :usdaId, :ingredientId]
+    EXCLUDED_ATTRIBUTES = [
+      :_id,
+      :id,
+      :currency,
+      :asin,
+      :usdaId,
+      :ingredientId,
+      :persistedAsin
+    ]
     INGREDIENT_ATTRIBUTES = [
       :name,
       :container_size,

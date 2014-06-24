@@ -9,3 +9,30 @@
     }
   }
 }
+
+.ingredient {
+  padding-bottom: 5px;
+
+  .meta {
+    font-size: 0.9em;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: gray;
+
+    &, li {
+      display: inline;
+    }
+
+    li {
+      padding-left: 10px;
+    }
+  }
+
+  .delete {
+    padding-top: 0;
+    padding-bottom: 0;
+    vertical-align: middle;
+  }
+}
+

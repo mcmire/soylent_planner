@@ -42,6 +42,11 @@ class IngredientsController < ApplicationController
     end
   end
 
+  def destroy
+    Ingredient.destroy(params[:id])
+    head :ok
+  end
+
   private
 
   def ingredient_params

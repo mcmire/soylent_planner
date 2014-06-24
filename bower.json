@@ -1,0 +1,20 @@
+{
+  "name": "soylent_planner",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mcmire/soylent_planner",
+  "authors": [
+    "Elliot Winkler <elliot.winkler@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "1.1.*"
+  }
+}

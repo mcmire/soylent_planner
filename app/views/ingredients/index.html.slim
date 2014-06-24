@@ -2,4 +2,16 @@ h1 Ingredients
 
 ul
   - @ingredients.each do |ingredient|
-    li= link_to ingredient.name, edit_ingredient_path(ingredient)
+    li.ingredient(data-item='ingredient')
+      span.name
+        = link_to ingredient.name, edit_ingredient_path(ingredient)
+      ul.meta
+        li
+          = number_to_currency ingredient.cost
+        li
+          button.btn.btn-xs.btn-danger.delete(
+            data-href="#{ingredient_path(ingredient)}"
+            data-delete='ingredient'
+            data-confirm='Are you sure you want to delete this ingredient?'
+          )
+            | Delete

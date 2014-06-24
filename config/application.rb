@@ -42,5 +42,7 @@ module SoylentPlanner
     # config.i18n.default_locale = :de
 
     config.autoload_paths << Rails.root.join('lib')
+
+    config.assets.paths << Rails.root.join('vendor/assets/bower_components')
   end
 end

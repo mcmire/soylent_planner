@@ -1,4 +1,4 @@
-Soylent planner
+Soylent Planner
 ===============
 
 Getting Started

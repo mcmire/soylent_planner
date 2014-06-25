@@ -139,7 +139,7 @@ class OptimalRecipeGenerator
       if min_value.to_f > 0 && max_value.to_f > 0
         constraints << {
           coefficients: coefficients,
-          range: [min_value, max_value]
+          range: [nil, max_value]
         }
       elsif max_value.to_f < 0
         raise "#{nutrient.name}'s max_value is 0 or undefined"

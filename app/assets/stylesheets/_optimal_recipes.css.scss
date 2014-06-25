@@ -18,7 +18,7 @@
       white-space: normal;
     }
 
-    .disabled {
+    .non-important {
       th, td {
         color: silver;
       }
@@ -26,6 +26,10 @@
 
     .end-of-basic-columns {
       border-right: 4px solid #ddd;
+    }
+
+    .total-row {
+      border-top: 4px solid #ddd;
     }
   }
 }

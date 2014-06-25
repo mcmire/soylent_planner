@@ -12,8 +12,8 @@ h1 Optimal Recipe
         - @recipe.nutrients.each do |nutrient|
           th= "#{nutrient.humanized_name} (#{unit_for(nutrient.name)})"
     tbody
-      - @recipe.ingredients.each do |ingredient|
-        tr(class="#{ingredient.daily_serving == 0 ? 'disabled' : ''}")
+      - @recipe.ingredients_with_daily_servings.each do |ingredient|
+        tr.non-important
           th.ingredient-name= ingredient.name
           td
           td
@@ -21,7 +21,7 @@ h1 Optimal Recipe
           td= currency ingredient.cost
           - @recipe.nutrients.each do |nutrient|
             td= round ingredient.value_for_nutrient(nutrient)
-        tr(class="#{ingredient.daily_serving == 0 ? 'disabled' : ''}")
+        tr.non-important
           th.ingredient-name= "#{ingredient.name} (normalized)"
           td= "#{integer ingredient.serving_size} #{ingredient.unit}"
           td= "#{integer ingredient.container_size} #{ingredient.unit}"
@@ -29,7 +29,7 @@ h1 Optimal Recipe
           td= currency ingredient.normalized_cost
           - @recipe.nutrients.each do |nutrient|
             td= round ingredient.normalized_value_for_nutrient(nutrient)
-        tr(class="#{ingredient.daily_serving == 0 ? 'disabled' : ''}")
+        tr
           th.ingredient-name= "#{ingredient.name} (multiplied)"
           td
           td
@@ -37,7 +37,7 @@ h1 Optimal Recipe
           td= currency ingredient.multiplied_cost
           - @recipe.nutrients.each do |nutrient|
             td= round ingredient.multiplied_value_for_nutrient(nutrient)
-      tr
+      tr.total-row
         th.ingredient-name Total
         td
         td

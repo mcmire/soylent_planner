@@ -331,6 +331,10 @@ class OptimalRecipeGenerator
       @nutrients = nutrients
     end
 
+    def ingredients_with_daily_servings
+      ingredients.select { |ingredient| ingredient.daily_serving > 0 }
+    end
+
     def total_cost
       ingredients.sum(&:cost)
     end

@@ -44,7 +44,46 @@ module ApplicationHelper
 
   def percentage(number)
     if number
-      "#{(number * 100).round(2)}%"
+      "#{round(number * 100)}%"
     end
+  end
+
+  def percentage_or_na(number)
+    if number
+      percentage(number)
+    else
+      '<i>n/a</i>'.html_safe
+    end
+  end
+
+  def round(number)
+    number_with_precision(number.to_f,
+      precision: OptimalRecipeGenerator.precision,
+      delimiter: ','
+    )
+  end
+
+  def currency(number)
+    number_to_currency(number.to_f,
+      precision: OptimalRecipeGenerator.precision
+    )
+  end
+
+  def float(number)
+    if number
+      number.to_f
+    end
+  end
+
+  def float_or_na(number)
+    if number
+      float(number)
+    else
+      '<i>n/a</i>'.html_safe
+    end
+  end
+
+  def integer(number)
+    number_with_delimiter(number.to_i, delimiter: ',')
   end
 end

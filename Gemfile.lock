@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/mcmire/simplex.git
+  revision: e35fccfdb89aab469683e5dbc28d834ad4e06174
+  specs:
+    simplex (1.2.0)
+
+GIT
   remote: git://github.com/mcmire/usda-nutrient-database.git
   revision: 10f94312711c7bf148c70986c3e2adf45a57be94
   branch: ew-make-importing-faster
@@ -7,11 +13,6 @@ GIT
       activerecord (>= 3.0.0)
       faraday
       rubyzip
-
-PATH
-  remote: ~/code/github/forks/simplex
-  specs:
-    simplex (1.2.0)
 
 GEM
   remote: https://rubygems.org/

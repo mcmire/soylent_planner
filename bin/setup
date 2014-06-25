@@ -3,14 +3,33 @@
 # Set up Rails app. Run this script immediately after cloning the codebase.
 # https://github.com/thoughtbot/guides/tree/master/protocol
 
+FOREMAN_PORT=7000
+
+npm_path="$(which npm 2>&1)"
+bower_path="$(which bower 2>&1)"
+
 # Exit if any subcommand fails
 set -e
+
+if [[ -z $npm_path ]]; then
+  echo "NPM is not installed, it is required to install Bower."
+  exit 1
+fi
+
+if [[ -z $bower_path ]]; then
+  echo "Bower is not installed. Install with: npm install -g bower"
+  exit 1
+fi
 
 # Set up Ruby dependencies via Bundler
 bundle install
 
+# Install front-end dependencies
+bower install
+
 # Set up database and add any development seed data
-bundle exec rake dev:prime
+# Also, import USDA data
+bundle exec rake dev:prime usda:import
 
 # Add binstubs to PATH via export PATH=".git/safe/../../bin:$PATH" in ~/.zshenv
 mkdir -p .git/safe
@@ -21,12 +40,9 @@ if [ ! -f .env ]; then
 fi
 
 # Pick a port for Foreman
-echo "port: 7000" > .foreman
+echo "port: $FOREMAN_PORT" > .foreman
 
-# Set up DNS via Pow
-if [ -d ~/.pow ]
-then
-  echo 7000 > ~/.pow/`basename $PWD`
-else
-  echo "Pow not set up but the team uses it for this project. Setup: http://goo.gl/RaDPO"
-fi
+echo
+echo "App initialized."
+echo "Run \`foreman start\` to start the app."
+echo "Visit http://localhost:$FOREMAN_PORT to view the app."

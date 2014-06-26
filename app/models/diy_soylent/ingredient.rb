@@ -46,6 +46,14 @@ module DiySoylent
       @ingredient_attributes[:form] = value.downcase
     end
 
+    def to_soylent_planner_ingredient
+      ::Ingredient.new(ingredient_attributes).tap do |ingredient|
+        ingredient.build_nutrient_collection(
+          nutrient_collection_attributes
+        )
+      end
+    end
+
     private
 
     def assign_attributes(attributes)

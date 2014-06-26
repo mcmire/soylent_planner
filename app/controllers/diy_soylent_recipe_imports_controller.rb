@@ -1,10 +1,12 @@
 class DiySoylentRecipeImportsController < ApplicationController
   def new
-    @url = params[:url]
+    @recipe_url = params[:recipe_url]
   end
 
   def create
-    importer = DiySoylentRecipeImporter.new(params[:url])
+    @recipe_url = params[:recipe_url]
+
+    importer = DiySoylentRecipeImporter.new(@recipe_url)
     importer.call
 
     invalid_ingredient_details = importer.invalid_ingredients.map do |ingredient|
@@ -16,7 +18,7 @@ class DiySoylentRecipeImportsController < ApplicationController
 Recipe could not be imported.
 These ingredients failed to import: #{invalid_ingredient_details}
 EOT
-      redirect_to :back
+      render :new
     else
       valid_ingredient_names = importer.valid_ingredients.map(&:name)
       existing_ingredient_names = importer.existing_ingredients.map(&:name)

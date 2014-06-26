@@ -1,0 +1,14 @@
+h1 Optimal Recipe Generator
+
+= form_tag optimal_recipe_from_diy_soylent_path, class: 'form-horizontal', method: :get do
+  .form-group
+    label.control-label.col-sm-3 Recipe URL
+    .col-sm-9
+      input.form-control(
+        type='text'
+        name='recipe_url'
+        placeholder='http://...'
+        value="#{@recipe_url}"
+      )
+  .form-group.buttons
+    button.btn.btn-primary(type='submit') Generate

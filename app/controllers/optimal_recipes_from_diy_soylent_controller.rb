@@ -24,8 +24,10 @@ class OptimalRecipesFromDiySoylentController < ApplicationController
 
       render template: 'optimal_recipes/show'
     else
-      flash.now[:danger] = "Missing recipe URL."
-      render :new
+      flash[:danger] = "Missing recipe URL."
+      redirect_to action: :new,
+        recipe_url: @recipe_url,
+        nutrient_profile_id: @nutrient_profile_id
     end
   end
 end

@@ -1,7 +1,16 @@
 module DiySoylent
   class Recipe
-    def self.fetch(url)
-      data = JSON.parse(HTTP.get(url).to_s)
+    def self.fetch(url, options = {})
+      json_url = url + '/json'
+      params = {}
+
+      if options[:nutrient_profile_id]
+        params[:nutrientProfile] = options[:nutrient_profile_id]
+      end
+
+      body = HTTP.get(json_url, params: params).to_s
+      data = JSON.parse(body)
+
       new(data)
     end
 

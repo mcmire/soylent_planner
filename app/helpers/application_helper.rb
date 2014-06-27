@@ -43,7 +43,7 @@ module ApplicationHelper
   end
 
   def percentage(number)
-    if number
+    if number && !number.to_f.infinite?
       "#{round(number * 100)}%"
     end
   end
@@ -88,17 +88,17 @@ module ApplicationHelper
   end
 
   def nutrient_completeness_score_class(recipe, nutrient)
-    min_score = recipe.min_completeness_score_for_nutrient(nutrient)
-    max_score = recipe.max_completeness_score_for_nutrient(nutrient)
+    min_score = recipe.min_completeness_score_for_nutrient(nutrient).to_f
+    max_score = recipe.max_completeness_score_for_nutrient(nutrient).to_f
 
-    pp nutrient: nutrient.name,
-       min_score: min_score.to_f,
-       max_score: max_score.to_f
-
-    if min_score > 0 && min_score < 1
-      'min-requirement-underachieved'
-    elsif max_score > 1
-      'max-requirement-overachieved'
+    if nutrient.max_value > 0
+      if (0.90..1).cover?(max_score)
+        'max-requirement-achieved'
+      elsif max_score > 1
+        'max-requirement-overachieved'
+      elsif !min_score.infinite? && min_score >= 0 && min_score < 1
+        'min-requirement-underachieved'
+      end
     end
   end
 end

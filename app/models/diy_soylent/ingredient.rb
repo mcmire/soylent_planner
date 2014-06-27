@@ -76,10 +76,12 @@ module DiySoylent
 
     def attributes_to_assign(attributes)
       attributes.inject({}) do |hash, (key, value)|
-        key = key.gsub('-', '_').to_sym
+        unless EXCLUDED_ATTRIBUTES.include?(key.to_sym)
+          key = key.gsub('-', '_').to_sym
 
-        if !EXCLUDED_ATTRIBUTES.include?(key) && (!value.is_a?(Fixnum) || value > 0)
-          hash[key] = value
+          if !value.is_a?(Fixnum) || value > 0
+            hash[key] = value
+          end
         end
 
         hash

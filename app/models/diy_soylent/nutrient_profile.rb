@@ -1,5 +1,16 @@
 module DiySoylent
   class NutrientProfile
+    EXCLUDED_ATTRIBUTES = [
+      :__v,
+      :_id,
+      :author,
+      :authorId,
+      :createdAt,
+      :hidden,
+      :rating,
+      :updatedAt,
+      :reviews
+    ]
     ATTRIBUTE_MAPPING = {
       carbs: :carbohydrates,
       fat: :total_fat,
@@ -34,7 +45,7 @@ module DiySoylent
 
     def assign_attributes(attributes)
       attributes.each do |key, value|
-        next if key == 'name'
+        next if key == 'name' or EXCLUDED_ATTRIBUTES.include?(key.to_sym)
 
         key = key.gsub('-', '_')
 

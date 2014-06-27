@@ -136,13 +136,13 @@ class OptimalRecipeGenerator
       min_value = nutrient.min_value.to_s.to_r
       max_value = nutrient.max_value.to_s.to_r
 
-      if min_value.to_f > 0 && max_value.to_f > 0
+      if max_value.to_f > 0
         constraints << {
           coefficients: coefficients,
           range: [nil, max_value]
         }
-      elsif max_value.to_f < 0
-        raise "#{nutrient.name}'s max_value is 0 or undefined"
+      else
+        puts "Skipping #{nutrient.name} since its max_value is 0"
       end
 
       constraints
@@ -210,7 +210,7 @@ class OptimalRecipeGenerator
   end
 
   class Ingredient < SimpleDelegator
-    attr_reader :container_size, :serving_size
+    attr_reader :cost, :container_size, :serving_size
 
     def initialize(optimal_recipe_generator:, nutrient_profile:, ingredient:)
       @optimal_recipe_generator = optimal_recipe_generator
@@ -218,12 +218,9 @@ class OptimalRecipeGenerator
 
       super(ingredient)
 
+      @cost = ingredient.cost.to_f
       @container_size = ingredient.container_size.to_i
       @serving_size = ingredient.serving_size.to_i
-
-      if cost.to_f == 0
-        raise "Cost for #{name} is 0?"
-      end
 
       if @container_size == 0
         warn "Container size for #{name} is 0, ignoring"
@@ -254,17 +251,19 @@ class OptimalRecipeGenerator
       value = value_for_nutrient(nutrient)
       max_value = nutrient.max_value
 
-      if value.to_i == 0 || max_value.to_i == 0
-        0
-      else
-        Rational(value, max_value)
+      if max_value
+        if max_value == 0
+          Float::INFINITY
+        else
+          Rational(value, max_value)
+        end
       end
     end
 
     def average_nutrient_completeness_score
-      values = nutrients.map do |nutrient|
-        completeness_score_for_nutrient(nutrient)
-      end
+      values = nutrients.
+        map { |nutrient| completeness_score_for_nutrient(nutrient) }.
+        reject { |value| value.to_f.infinite? }
 
       if values.size == 0
         0
@@ -286,6 +285,7 @@ class OptimalRecipeGenerator
     def initialize(optimal_recipe_generator:, name:)
       @optimal_recipe_generator = optimal_recipe_generator
       @name = name
+      @min_value, @max_value = determine_min_and_max_value
     end
 
     def humanized_name
@@ -298,19 +298,22 @@ class OptimalRecipeGenerator
       end
     end
 
-    def min_value
-      optimal_recipe_generator.min_value_for_nutrient(self)
-    end
-
-    def max_value
-      optimal_recipe_generator.max_value_for_nutrient(self)
-    end
-
     private
 
     attr_reader :optimal_recipe_generator
 
     delegate :ingredients, to: :optimal_recipe_generator
+
+    def determine_min_and_max_value
+      min_value = optimal_recipe_generator.min_value_for_nutrient(self)
+      max_value = optimal_recipe_generator.max_value_for_nutrient(self)
+
+      if min_value.to_f > max_value.to_f
+        min_value, max_value = max_value, min_value
+      end
+
+      [min_value, max_value]
+    end
   end
 
   class Recipe
@@ -351,11 +354,11 @@ class OptimalRecipeGenerator
 
     def min_completeness_score_for_nutrient(nutrient)
       total = total_multiplied_value_for_nutrient(nutrient)
-      min = nutrient_profile.min_value_for_nutrient(nutrient)
+      min = nutrient.min_value
 
       if min
         if min == 0
-          0
+          Float::INFINITY
         else
           Rational(total, min)
         end
@@ -364,11 +367,11 @@ class OptimalRecipeGenerator
 
     def max_completeness_score_for_nutrient(nutrient)
       total = total_multiplied_value_for_nutrient(nutrient)
-      max = nutrient_profile.max_value_for_nutrient(nutrient)
+      max = nutrient.max_value
 
       if max
         if max == 0
-          0
+          Float::INFINITY
         else
           Rational(total, max)
         end

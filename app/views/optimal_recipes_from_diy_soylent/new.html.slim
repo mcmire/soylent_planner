@@ -7,8 +7,17 @@ h1 Optimal Recipe Generator
       input.form-control(
         type='text'
         name='recipe_url'
-        placeholder='http://...'
+        placeholder=''
         value="#{@recipe_url}"
+      )
+  .form-group
+    label.control-label.col-sm-3 Nutrient Profile ID
+    .col-sm-9
+      input.form-control.url(
+        type='text'
+        name='nutrient_profile_id'
+        placeholder='(Optional)'
+        value="#{@nutrient_profile_id}"
       )
   .form-group.buttons
     button.btn.btn-primary(type='submit') Generate

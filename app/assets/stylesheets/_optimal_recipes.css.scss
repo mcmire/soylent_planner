@@ -49,5 +49,14 @@
         font-weight: bold;
       }
     }
+
+    .max-requirement-achieved {
+      background-color: #E8FCE8;
+
+      &.completeness-score {
+        color: #157015;
+        font-weight: bold;
+      }
+    }
   }
 }

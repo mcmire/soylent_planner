@@ -58,7 +58,7 @@ h1 Optimal Recipe
         td
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
-            = float_or_na @recipe.nutrient_profile.min_value_for_nutrient(nutrient)
+            = float_or_na(nutrient.min_value)
       tr
         th.ingredient-name Max target
         td
@@ -67,9 +67,18 @@ h1 Optimal Recipe
         td
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
-            = float_or_na @recipe.nutrient_profile.max_value_for_nutrient(nutrient)
+            = float_or_na(nutrient.max_value)
       tr
-        th.ingredient-name % reached
+        th.ingredient-name % min reached
+        td
+        td
+        td.end-of-basic-columns
+        td
+        - @recipe.nutrients.each do |nutrient|
+          td(class="#{nutrient_completeness_score_class(@recipe, nutrient)} completeness-score")
+            = percentage_or_na @recipe.min_completeness_score_for_nutrient(nutrient)
+      tr
+        th.ingredient-name % max reached
         td
         td
         td.end-of-basic-columns

@@ -7,37 +7,59 @@ h1 Optimal Recipe
         th.ingredient-name Ingredient
         th Serving size
         th Container size
-        th.end-of-basic-columns Daily serving
-        th Cost
+        th Daily serving
+        th Percentage of container
+        th Days/Serving
+        th.beginning-of-basic-columns  Cost
         - @recipe.nutrients.each do |nutrient|
           th(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
             = "#{nutrient.humanized_name} (#{unit_for(nutrient.name)})"
     tbody
       - @recipe.ingredients_with_daily_servings.each do |ingredient|
-        tr.non-important
-          th.ingredient-name= ingredient.name
-          td
-          td
-          td.end-of-basic-columns
-          td= currency ingredient.cost
-          - @recipe.nutrients.each do |nutrient|
-            td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
-              = round ingredient.value_for_nutrient(nutrient)
-        tr.non-important
-          th.ingredient-name= "#{ingredient.name} (normalized)"
-          td= "#{integer ingredient.serving_size} #{ingredient.unit}"
-          td= "#{integer ingredient.container_size} #{ingredient.unit}"
-          td.end-of-basic-columns
-          td= currency ingredient.normalized_cost
-          - @recipe.nutrients.each do |nutrient|
-            td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
-              = round ingredient.normalized_value_for_nutrient(nutrient)
+        - if @debug
+          tr.non-important
+            th.ingredient-name= ingredient.name
+            td
+            td
+            td
+            td
+            td
+            td.beginning-of-basic-columns
+              = currency ingredient.cost
+            - @recipe.nutrients.each do |nutrient|
+              td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
+                = round ingredient.value_for_nutrient(nutrient)
+          tr.non-important
+            th.ingredient-name= "#{ingredient.name} (normalized)"
+            td= "#{integer ingredient.serving_size} #{ingredient.unit}"
+            td= "#{integer ingredient.container_size} #{ingredient.unit}"
+            td
+            td
+            td
+            td.beginning-of-basic-columns
+              = currency ingredient.normalized_cost
+            - @recipe.nutrients.each do |nutrient|
+              td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
+                = round ingredient.normalized_value_for_nutrient(nutrient)
         tr
-          th.ingredient-name= "#{ingredient.name} (multiplied)"
+          th.ingredient-name
+            = ingredient.name
+            - if @debug
+              | (multiplied)
           td
+            - unless @debug
+              = "#{integer ingredient.serving_size} #{ingredient.unit}"
           td
-          td.end-of-basic-columns= "#{integer ingredient.daily_serving} #{ingredient.unit}"
-          td= currency ingredient.multiplied_cost
+            - unless @debug
+              = "#{integer ingredient.container_size} #{ingredient.unit}"
+          td
+            = "#{integer ingredient.daily_serving} #{ingredient.unit}"
+          td
+            = "#{round_rational ingredient.percentage_of_container}"
+          td
+            = "#{integer ingredient.days_per_serving}"
+          td.beginning-of-basic-columns
+            = currency ingredient.multiplied_cost
           - @recipe.nutrients.each do |nutrient|
             td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
               = round ingredient.multiplied_value_for_nutrient(nutrient)
@@ -45,8 +67,11 @@ h1 Optimal Recipe
         th.ingredient-name Total
         td
         td
-        td.end-of-basic-columns
-        td= currency @recipe.total_multiplied_cost
+        td
+        td
+        td
+        td.beginning-of-basic-columns
+          = currency @recipe.total_multiplied_cost
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
             = round @recipe.total_multiplied_value_for_nutrient(nutrient)
@@ -54,8 +79,10 @@ h1 Optimal Recipe
         th.ingredient-name Min target
         td
         td
-        td.end-of-basic-columns
         td
+        td
+        td
+        td.beginning-of-basic-columns
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
             = float_or_na(nutrient.min_value)
@@ -63,26 +90,33 @@ h1 Optimal Recipe
         th.ingredient-name Max target
         td
         td
-        td.end-of-basic-columns
         td
+        td
+        td
+        td.beginning-of-basic-columns
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)}")
             = float_or_na(nutrient.max_value)
-      tr
-        th.ingredient-name % min reached
-        td
-        td
-        td.end-of-basic-columns
-        td
-        - @recipe.nutrients.each do |nutrient|
-          td(class="#{nutrient_completeness_score_class(@recipe, nutrient)} completeness-score")
-            = percentage_or_na @recipe.min_completeness_score_for_nutrient(nutrient)
+      - if @debug
+        tr
+          th.ingredient-name % min reached
+          td
+          td
+          td
+          td
+          td
+          td.beginning-of-basic-columns
+          - @recipe.nutrients.each do |nutrient|
+            td(class="#{nutrient_completeness_score_class(@recipe, nutrient)} completeness-score")
+              = percentage_or_na @recipe.min_completeness_score_for_nutrient(nutrient)
       tr
         th.ingredient-name % max reached
         td
         td
-        td.end-of-basic-columns
         td
+        td
+        td
+        td.beginning-of-basic-columns
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)} completeness-score")
             = percentage_or_na @recipe.max_completeness_score_for_nutrient(nutrient)

@@ -8,10 +8,26 @@ module DiySoylent
         params[:nutrientProfile] = options[:nutrient_profile_id]
       end
 
-      body = HTTP.get(json_url, params: params).to_s
+      body = make_request(json_url, params)
       data = JSON.parse(body)
 
       new(data)
+    end
+
+    def self.make_request(url, params)
+      key = ActiveSupport::JSON.encode(url: url, params: params)
+
+      if request_cache.key?(key)
+        puts "Pulling data out of cache"
+      else
+        puts "Performing request"
+      end
+
+      request_cache[key] ||= HTTP.get(url, params: params).to_s
+    end
+
+    def self.request_cache
+      @_request_cache ||= {}
     end
 
     def initialize(data)

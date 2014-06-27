@@ -63,6 +63,14 @@ module ApplicationHelper
     )
   end
 
+  def round_rational(number)
+    if number <= 0.01
+      number.to_f.round(4)
+    else
+      number.round(2)
+    end
+  end
+
   def currency(number)
     number_to_currency(number.to_f,
       precision: OptimalRecipeGenerator.precision

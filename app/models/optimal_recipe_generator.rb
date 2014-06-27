@@ -220,7 +220,7 @@ class OptimalRecipeGenerator
 
       @cost = ingredient.cost.to_f
       @container_size = ingredient.container_size.to_i
-      @serving_size = ingredient.serving_size.to_i
+      @serving_size = ingredient.serving_size.to_f
 
       if @container_size == 0
         warn "Container size for #{name} is 0, ignoring"
@@ -394,6 +394,14 @@ class OptimalRecipeGenerator
 
     def multiplied_cost
       daily_serving.rationalize * normalized_cost
+    end
+
+    def days_per_serving
+      Rational(container_size, daily_serving)
+    end
+
+    def percentage_of_container
+      Rational(daily_serving, container_size)
     end
   end
 end

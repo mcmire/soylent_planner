@@ -349,7 +349,20 @@ class OptimalRecipeGenerator
       ingredients.sum(&:multiplied_cost)
     end
 
-    def completeness_score_for_nutrient(nutrient)
+    def min_completeness_score_for_nutrient(nutrient)
+      total = total_multiplied_value_for_nutrient(nutrient)
+      min = nutrient_profile.min_value_for_nutrient(nutrient)
+
+      if min
+        if min == 0
+          0
+        else
+          Rational(total, min)
+        end
+      end
+    end
+
+    def max_completeness_score_for_nutrient(nutrient)
       total = total_multiplied_value_for_nutrient(nutrient)
       max = nutrient_profile.max_value_for_nutrient(nutrient)
 

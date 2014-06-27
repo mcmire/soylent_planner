@@ -31,5 +31,23 @@
     .total-row {
       border-top: 4px solid #ddd;
     }
+
+    .min-requirement-underachieved {
+      background-color: #F0F4FD;
+
+      &.completeness-score {
+        color: #2727B6;
+        font-weight: bold;
+      }
+    }
+
+    .max-requirement-overachieved {
+      background-color: #FFF2F0;
+
+      &.completeness-score {
+        color: #B30303;
+        font-weight: bold;
+      }
+    }
   }
 }

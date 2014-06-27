@@ -86,4 +86,19 @@ module ApplicationHelper
   def integer(number)
     number_with_delimiter(number.to_i, delimiter: ',')
   end
+
+  def nutrient_completeness_score_class(recipe, nutrient)
+    min_score = recipe.min_completeness_score_for_nutrient(nutrient)
+    max_score = recipe.max_completeness_score_for_nutrient(nutrient)
+
+    pp nutrient: nutrient.name,
+       min_score: min_score.to_f,
+       max_score: max_score.to_f
+
+    if min_score > 0 && min_score < 1
+      'min-requirement-underachieved'
+    elsif max_score > 1
+      'max-requirement-overachieved'
+    end
+  end
 end

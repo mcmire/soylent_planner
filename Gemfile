@@ -11,7 +11,6 @@ gem 'jquery-rails'
 gem 'kaminari'
 gem 'pg'
 gem 'pg_search'
-gem 'puma'
 gem 'rack-timeout'
 gem 'rails', '~> 4.1.0'
 gem 'recipient_interceptor'
@@ -21,18 +20,16 @@ gem 'simplex', github: 'mcmire/simplex'
 gem 'slim'
 gem 'title'
 gem 'uglifier'
+gem 'unicorn'
 gem 'usda-nutrient-database', github: 'mcmire/usda-nutrient-database', branch: 'ew-make-importing-faster'
 
 group :development do
   gem 'foreman'
-  gem 'spring'
-  gem 'spring-commands-rspec'
 end
 
 group :development, :test do
   gem 'awesome_print'
   gem 'dotenv-rails'
-  gem 'factory_girl_rails'
   gem 'pry-rails'
 end
 

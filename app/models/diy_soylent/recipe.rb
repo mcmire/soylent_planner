@@ -15,15 +15,7 @@ module DiySoylent
     end
 
     def self.make_request(url, params)
-      key = ActiveSupport::JSON.encode(url: url, params: params)
-
-      if request_cache.key?(key)
-        puts "Pulling data out of cache"
-      else
-        puts "Performing request"
-      end
-
-      request_cache[key] ||= HTTP.get(url, params: params).to_s
+      HTTP.get(url, params: params).to_s
     end
 
     def self.request_cache

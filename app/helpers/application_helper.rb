@@ -104,7 +104,9 @@ module ApplicationHelper
         'max-requirement-achieved'
       elsif max_score > 1
         'max-requirement-overachieved'
-      elsif !min_score.infinite? && min_score >= 0 && min_score < 1
+      elsif min_score.infinite? && (0...0.2).cover?(max_score)
+        'max-requirement-underachieved'
+      elsif !min_score.infinite? && (0...1).cover?(min_score)
         'min-requirement-underachieved'
       end
     end

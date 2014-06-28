@@ -32,7 +32,8 @@
       border-top: 4px solid #ddd;
     }
 
-    .min-requirement-underachieved {
+    .min-requirement-underachieved,
+    .max-requirement-underachieved {
       background-color: #F0F4FD;
 
       &.completeness-score {

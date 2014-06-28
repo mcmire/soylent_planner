@@ -1,6 +1,6 @@
 {
-  "name": "soylent_planner",
-  "version": "0.0.0",
+  "name": "soylent-planner",
+  "version": "0.0.1",
   "homepage": "https://github.com/mcmire/soylent_planner",
   "authors": [
     "Elliot Winkler <elliot.winkler@gmail.com>"

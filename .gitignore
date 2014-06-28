@@ -12,3 +12,4 @@
 /tags
 /tmp/*
 /vendor/assets/bower_components
+config/database.yml.example

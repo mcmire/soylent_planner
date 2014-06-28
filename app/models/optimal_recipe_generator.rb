@@ -309,8 +309,8 @@ class OptimalRecipeGenerator
       max_value = optimal_recipe_generator.max_value_for_nutrient(self)
 
       # Some nutrient profiles are not configured correctly
-      if min_value.to_f > max_value.to_f
-        raise "Min value for #{nutrient.name} is greater than max value! Please fix your nutrient profile and try again."
+      if max_value.to_f > 0 && min_value.to_f > max_value.to_f
+        raise "Min value for #{name} is greater than max value! Please fix your nutrient profile and try again."
       end
 
       [min_value, max_value]

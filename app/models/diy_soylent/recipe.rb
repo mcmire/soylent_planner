@@ -21,7 +21,7 @@ module DiySoylent
         body = HTTP.get(url, params: params).to_s
       end
 
-      Rails.logger.debug "Time to fetch recipe: #{elapsed_time} seconds"
+      puts "Time to fetch recipe: #{elapsed_time} seconds"
 
       body
     end

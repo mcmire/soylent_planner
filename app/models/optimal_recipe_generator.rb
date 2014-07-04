@@ -156,7 +156,7 @@ class OptimalRecipeGenerator
       solution = simplex_problem.solve
     end
 
-    Rails.logger.debug "Time to solve simplex: #{elapsed_time} seconds"
+    puts "Time to solve simplex: #{elapsed_time} seconds"
 
     solution
   end

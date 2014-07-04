@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/mcmire/simplex.git
-  revision: 0a3cfbdfda6c0acaea606cee9e5d456b83f8b1a3
+  revision: 94970b6f6ca49a2a9b1889a7ce00a8d96bdb1055
   specs:
     simplex (1.2.0)
 

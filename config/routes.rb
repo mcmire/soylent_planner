@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   resource :optimal_recipe_from_diy_soylent,
     only: [:new, :show],
     controller: 'optimal_recipes_from_diy_soylent'
+  resource :optimal_recipe_from_usda_database,
+    only: [:new, :show],
+    controller: 'optimal_recipes_from_usda_database'
 
   get '/ingredients/new_from_usda_food',
     to: 'ingredients#new_from_usda_food',

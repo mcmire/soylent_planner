@@ -53,7 +53,7 @@ class UsdaFood::IngredientAttributeBuilder
 
   def foods_nutrients_by_nutrient_number
     @_foods_nutrients_by_nutrient_number ||=
-      usda_food.eager_foods_nutrients.
+      usda_food.foods_nutrients.
       index_by { |foods_nutrient| foods_nutrient.nutrient_number.to_i }
   end
 

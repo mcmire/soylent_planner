@@ -15,7 +15,15 @@ module DiySoylent
     end
 
     def self.make_request(url, params)
-      HTTP.get(url, params: params).to_s
+      body = nil
+
+      elapsed_time = Benchmark.realtime do
+        body = HTTP.get(url, params: params).to_s
+      end
+
+      Rails.logger.debug "Time to fetch recipe: #{elapsed_time} seconds"
+
+      body
     end
 
     def self.request_cache

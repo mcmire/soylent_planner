@@ -58,7 +58,7 @@ class OptimalRecipeGenerator
 
   def generate
     simplex_problem = build_simplex_problem
-    solution = simplex_problem.solve
+    solution = solve_simplex(simplex_problem)
     Recipe.new(
       nutrient_profile: nutrient_profile,
       ingredients: ingredients,
@@ -147,6 +147,18 @@ class OptimalRecipeGenerator
 
       constraints
     end
+  end
+
+  def solve_simplex(simplex_problem)
+    solution = nil
+
+    elapsed_time = Benchmark.realtime do
+      solution = simplex_problem.solve
+    end
+
+    Rails.logger.debug "Time to solve simplex: #{elapsed_time} seconds"
+
+    solution
   end
 
   def normalized_nutrient_value_totals_by_name

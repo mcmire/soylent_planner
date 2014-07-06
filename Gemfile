@@ -16,7 +16,7 @@ gem 'rails', '~> 4.1.0'
 gem 'recipient_interceptor'
 gem 'sass-rails', '~> 4.0.3'
 gem 'simple_form', '3.1.0.rc1'
-gem 'simplex', github: 'mcmire/simplex'
+gem 'lpsolve'
 gem 'slim'
 gem 'title'
 gem 'uglifier'
@@ -31,6 +31,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'dotenv-rails'
   gem 'pry-rails'
+  gem 'minitest'
 end
 
 group :production do

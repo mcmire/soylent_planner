@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/mcmire/simplex.git
-  revision: 94970b6f6ca49a2a9b1889a7ce00a8d96bdb1055
-  specs:
-    simplex (1.2.0)
-
-GIT
   remote: git://github.com/mcmire/usda-nutrient-database.git
   revision: 10f94312711c7bf148c70986c3e2adf45a57be94
   branch: ew-make-importing-faster
@@ -84,6 +78,7 @@ GEM
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     kgio (2.9.2)
+    lpsolve (5.5.10.j)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -189,6 +184,8 @@ DEPENDENCIES
   http
   jquery-rails
   kaminari
+  lpsolve
+  minitest
   pg
   pg_search
   pry-rails
@@ -198,7 +195,6 @@ DEPENDENCIES
   recipient_interceptor
   sass-rails (~> 4.0.3)
   simple_form (= 3.1.0.rc1)
-  simplex!
   slim
   title
   uglifier

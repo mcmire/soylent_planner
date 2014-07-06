@@ -17,7 +17,7 @@ class OptimalRecipesFromUsdaDatabaseController < ApplicationController
       )
 
       ingredients = []
-      UsdaFood.includes(foods_nutrients: :nutrient).find_each do |usda_food|
+      UsdaFood.selected.includes(foods_nutrients: :nutrient).find_each do |usda_food|
         ingredients << usda_food.to_soylent_planner_ingredient
       end
 

@@ -65,7 +65,7 @@ class OptimalRecipeGenerator
       nutrients: nutrients,
       ingredient_amounts: solution
     )
-  rescue Simplex::UnboundedProblem
+  rescue SimplexWrapper::UnsolvableProblem
     nil
   end
 
@@ -93,8 +93,7 @@ class OptimalRecipeGenerator
     :simplex_problem
 
   def build_simplex_problem
-    #problem = Simplex.minimization_problem do |p|
-    problem = Simplex.maximization_problem do |p|
+    problem = SimplexWrapper.maximization_problem do |p|
       p.objective_coefficients = objective_coefficients
 
       constraints.each do |constraint|

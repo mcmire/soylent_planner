@@ -78,7 +78,7 @@ GEM
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
     kgio (2.9.2)
-    lpsolve (5.5.10.j)
+    lpsolve (5.5.10.i)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -185,7 +185,7 @@ DEPENDENCIES
   http
   jquery-rails
   kaminari
-  lpsolve (= 5.5.10.j)
+  lpsolve (= 5.5.10.i)
   minitest
   pg
   pg_search

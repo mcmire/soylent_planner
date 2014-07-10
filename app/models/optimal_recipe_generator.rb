@@ -282,6 +282,8 @@ class OptimalRecipeGenerator
         else
           OptimalRecipeGenerator.divide(value, max_value)
         end
+      else
+        0
       end
     end
 

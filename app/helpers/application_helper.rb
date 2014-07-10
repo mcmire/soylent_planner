@@ -99,7 +99,7 @@ module ApplicationHelper
     min_score = recipe.min_completeness_score_for_nutrient(nutrient).to_f
     max_score = recipe.max_completeness_score_for_nutrient(nutrient).to_f
 
-    if nutrient.max_value > 0
+    if nutrient.max_value && nutrient.max_value > 0
       if (0.90..1).cover?(max_score)
         'max-requirement-achieved'
       elsif max_score > 1

@@ -29,5 +29,18 @@ class OptimalRecipesFromDiySoylentController < ApplicationController
         recipe_url: @recipe_url,
         nutrient_profile_id: @nutrient_profile_id
     end
+  rescue OptimalRecipeGenerator::Error => error
+    flash[:danger] = error.message
+    redirect_to action: :new,
+      recipe_url: @recipe_url,
+      nutrient_profile_id: @nutrient_profile_id
+  rescue => error
+    Rails.logger.debug "#{error.class}: #{error.message}"
+    Rails.logger.debug error.backtrace.join("\n")
+
+    flash[:danger] = "Hmm... seems there was a problem generating your recipe. Sorry about that."
+    redirect_to action: :new,
+      recipe_url: @recipe_url,
+      nutrient_profile_id: @nutrient_profile_id
   end
 end

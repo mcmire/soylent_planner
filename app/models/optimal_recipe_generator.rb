@@ -4,6 +4,8 @@
 # nutrients, etc.? This is a greedy approach...
 
 class OptimalRecipeGenerator
+  Error = Class.new(StandardError)
+
   class << self
     attr_accessor :profile, :debug
   end
@@ -67,7 +69,7 @@ class OptimalRecipeGenerator
     @constraints = build_constraints
 
     if @ingredients.empty?
-      raise "There aren't any ingredients, add some first!"
+      raise Error, "There aren't any ingredients, add some first!"
     end
 
     #pp objective_coefficients: objective_coefficients,
@@ -334,7 +336,7 @@ class OptimalRecipeGenerator
 
       # Some nutrient profiles are not configured correctly
       if max_value.to_f > 0 && min_value.to_f > max_value.to_f
-        raise "Min value for #{name} is greater than max value! Please fix your nutrient profile and try again."
+        raise Error, "Min value for #{name} is greater than max value! Please fix your nutrient profile and try again."
       end
 
       [min_value, max_value]

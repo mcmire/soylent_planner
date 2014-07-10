@@ -132,5 +132,7 @@ h1 Optimal Recipe
         - @recipe.nutrients.each do |nutrient|
           td(class="#{nutrient_completeness_score_class(@recipe, nutrient)} completeness-score")
             = percentage_or_na @recipe.max_completeness_score_for_nutrient(nutrient)
+- elsif @error
+  p== "Error: #{@error}"
 - else
   p No optimal recipe exists.

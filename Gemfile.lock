@@ -185,7 +185,7 @@ DEPENDENCIES
   http
   jquery-rails
   kaminari
-  lpsolve
+  lpsolve (= 5.5.10.j)
   minitest
   pg
   pg_search

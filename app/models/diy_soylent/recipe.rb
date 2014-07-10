@@ -15,15 +15,17 @@ module DiySoylent
     end
 
     def self.make_request(url, params)
-      body = nil
+      request_cache[url] ||= begin
+        body = nil
 
-      elapsed_time = Benchmark.realtime do
-        body = HTTP.get(url, params: params).to_s
+        elapsed_time = Benchmark.realtime do
+          body = HTTP.get(url, params: params).to_s
+        end
+
+        puts "Time to fetch recipe: #{elapsed_time} seconds"
+
+        body
       end
-
-      puts "Time to fetch recipe: #{elapsed_time} seconds"
-
-      body
     end
 
     def self.request_cache

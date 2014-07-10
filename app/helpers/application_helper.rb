@@ -1,4 +1,6 @@
 module ApplicationHelper
+  VISUAL_PRECISION = 2
+
   NUTRIENT_COLLECTION_LABELS = {
     monounsaturated_fat: 'Monounsat. fat',
     polyunsaturated_fat: 'Polyunsat. fat',
@@ -58,7 +60,7 @@ module ApplicationHelper
 
   def round(number)
     number_with_precision(number.to_f,
-      precision: OptimalRecipeGenerator.precision,
+      precision: VISUAL_PRECISION,
       delimiter: ','
     )
   end
@@ -72,9 +74,7 @@ module ApplicationHelper
   end
 
   def currency(number)
-    number_to_currency(number.to_f,
-      precision: OptimalRecipeGenerator.precision
-    )
+    number_to_currency(number.to_f, precision: 2)
   end
 
   def float(number)

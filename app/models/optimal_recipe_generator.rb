@@ -4,24 +4,40 @@
 # nutrients, etc.? This is a greedy approach...
 
 class OptimalRecipeGenerator
-  PRECISION = 4
-  #PRECISION = nil
-
-  def self.precision
-    PRECISION
+  class << self
+    attr_accessor :profile, :debug
   end
 
-  def self.round(number)
-    if PRECISION
-      number.round(PRECISION)
+  self.profile = ENV['PROFILE_OPTIMAL_RECIPE_GENERATOR']
+  self.debug = ENV['DEBUG_OPTIMAL_RECIPE_GENERATOR']
+
+  def self.define_debug_method(method_name, debug_implementation, non_debug_implementation)
+    if debug
+      define_singleton_method(method_name, &debug_implementation)
     else
-      number
+      define_singleton_method(method_name, &non_debug_implementation)
     end
   end
 
-  def self.rationalize(number)
-    round(number).to_s.to_r
-  end
+  define_debug_method :round,
+    -> (number) { number.round(4) },
+    -> (number) { number }
+
+  define_debug_method :rationalize,
+    -> (number) { round(number).to_s.to_r },
+    -> (number) { number }
+
+  define_debug_method :multiply,
+    -> (first, second) { rationalize(first) * rationalize(second) },
+    -> (first, second) { first * second }
+
+  define_debug_method :divide,
+    -> (numerator, denominator) {
+      Rational(rationalize(numerator), rationalize(denominator))
+    },
+    -> (numerator, denominator) {
+      numerator.to_f / denominator
+    }
 
   def self.generate(options = {})
     generator = new(options)
@@ -35,6 +51,8 @@ class OptimalRecipeGenerator
     generator.generate
   end
 
+  include BenchmarkingHelpers
+
   attr_reader :nutrient_profile, :ingredients, :nutrients, :recipe
 
   delegate :min_value_for_nutrient, :max_value_for_nutrient,
@@ -42,9 +60,9 @@ class OptimalRecipeGenerator
 
   def initialize(nutrient_profile:, ingredients:, nutrient_names:)
     @nutrient_profile = build_nutrient_profile(nutrient_profile)
-    @ingredients = build_ingredients(@nutrient_profile, ingredients)
     @nutrient_names = nutrient_names
-    @nutrients = build_nutrients(@nutrient_profile, @ingredients)
+    @nutrients = build_nutrients(@nutrient_profile)
+    @ingredients = build_ingredients(@nutrient_profile, ingredients)
     @objective_coefficients = build_objective_coefficients
     @constraints = build_constraints
 
@@ -118,7 +136,7 @@ class OptimalRecipeGenerator
       end
     end
 
-    #problem.debug!
+    problem.debug!
 
     problem
   end
@@ -132,8 +150,8 @@ class OptimalRecipeGenerator
   def build_constraints
     nutrients.inject([]) do |constraints, nutrient|
       coefficients = nutrient.ingredient_values
-      min_value = nutrient.min_value.to_s.to_r
-      max_value = nutrient.max_value.to_s.to_r
+      min_value = OptimalRecipeGenerator.rationalize(nutrient.min_value)
+      max_value = OptimalRecipeGenerator.rationalize(nutrient.max_value)
 
       if max_value.to_f > 0
         constraints << {
@@ -149,15 +167,7 @@ class OptimalRecipeGenerator
   end
 
   def solve_simplex(simplex_problem)
-    solution = nil
-
-    elapsed_time = Benchmark.realtime do
-      solution = simplex_problem.solve
-    end
-
-    puts "Time to solve simplex: #{elapsed_time} seconds"
-
-    solution
+    measure('solve simplex') { simplex_problem.solve }
   end
 
   def normalized_nutrient_value_totals_by_name
@@ -193,7 +203,7 @@ class OptimalRecipeGenerator
       end
   end
 
-  def build_nutrients(nutrient_profile, ingredients)
+  def build_nutrients(nutrient_profile)
     nutrient_names.map do |nutrient_name|
       Nutrient.new(
         optimal_recipe_generator: self,
@@ -207,7 +217,7 @@ class OptimalRecipeGenerator
       min = min_nutrient_collection.__send__(nutrient.name)
 
       if min
-        min.to_f.rationalize
+        OptimalRecipeGenerator.rationalize(min)
       end
     end
 
@@ -215,7 +225,7 @@ class OptimalRecipeGenerator
       max = max_nutrient_collection.__send__(nutrient.name)
 
       if max
-        max.to_f.rationalize
+        OptimalRecipeGenerator.rationalize(max)
       end
     end
   end
@@ -240,22 +250,24 @@ class OptimalRecipeGenerator
       if @serving_size == 0
         warn "Serving size for #{name} is 0, ignoring"
       end
+
+      @values_by_nutrient_name = nutrients.inject({}) do |hash, nutrient|
+        value = nutrient_collection.__send__(nutrient.name) || 0
+        hash[nutrient.name] = OptimalRecipeGenerator.rationalize(value)
+        hash
+      end
     end
 
     def value_for_nutrient(nutrient)
-      (nutrient_collection.__send__(nutrient.name) || 0).to_f.rationalize
+      values_by_nutrient_name[nutrient.name]
     end
 
     def normalized_value_for_nutrient(nutrient)
-      normalized_value = Rational(value_for_nutrient(nutrient), serving_size)
-      #puts "#{name} has #{value_for_nutrient(nutrient_name)} #{NutrientCollection.unit_for(nutrient_name)} of #{nutrient_name};\n  its container size is #{container_size} #{unit} which means the normalized value is #{normalized_value}"
-      normalized_value
+      OptimalRecipeGenerator.divide(value_for_nutrient(nutrient), serving_size)
     end
 
     def normalized_cost
-      normalized_cost = Rational(cost.to_f.rationalize, container_size)
-      #puts "#{name} costs $#{cost};\n  its container size is #{container_size} #{unit} which means the normalized cost is $#{normalized_cost}"
-      normalized_cost
+      OptimalRecipeGenerator.divide(cost, container_size)
     end
 
     def completeness_score_for_nutrient(nutrient)
@@ -266,7 +278,7 @@ class OptimalRecipeGenerator
         if max_value == 0
           Float::INFINITY
         else
-          Rational(value, max_value)
+          OptimalRecipeGenerator.divide(value, max_value)
         end
       end
     end
@@ -279,13 +291,14 @@ class OptimalRecipeGenerator
       if values.size == 0
         0
       else
-        Rational(values.sum, values.size)
+        OptimalRecipeGenerator.divide(values.sum, values.size)
       end
     end
 
     private
 
-    attr_reader :optimal_recipe_generator, :nutrient_profile
+    attr_reader :optimal_recipe_generator, :nutrient_profile,
+      :values_by_nutrient_name
 
     delegate :nutrients, to: :optimal_recipe_generator
   end
@@ -372,7 +385,7 @@ class OptimalRecipeGenerator
         if min == 0
           Float::INFINITY
         else
-          Rational(total, min)
+          OptimalRecipeGenerator.divide(total, min)
         end
       end
     end
@@ -385,7 +398,7 @@ class OptimalRecipeGenerator
         if max == 0
           Float::INFINITY
         else
-          Rational(total, max)
+          OptimalRecipeGenerator.divide(total, max)
         end
       end
     end
@@ -401,19 +414,19 @@ class OptimalRecipeGenerator
     attr_accessor :daily_serving
 
     def multiplied_value_for_nutrient(nutrient)
-      daily_serving.rationalize * normalized_value_for_nutrient(nutrient)
+      OptimalRecipeGenerator.multiply(daily_serving, normalized_value_for_nutrient(nutrient))
     end
 
     def multiplied_cost
-      daily_serving.rationalize * normalized_cost
+      OptimalRecipeGenerator.multiply(daily_serving, normalized_cost)
     end
 
     def days_per_serving
-      Rational(container_size, daily_serving)
+      OptimalRecipeGenerator.divide(container_size, daily_serving)
     end
 
     def percentage_of_container
-      Rational(daily_serving, container_size)
+      OptimalRecipeGenerator.divide(daily_serving, container_size)
     end
   end
 end

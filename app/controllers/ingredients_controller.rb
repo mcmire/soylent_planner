@@ -10,7 +10,7 @@ class IngredientsController < ApplicationController
 
   def new_from_usda_food
     usda_food = UsdaFood.find(params[:usda_food_id])
-    @ingredient = Ingredient.new_from_usda_food(usda_food)
+    @ingredient = Ingredient.from_usda_food(usda_food)
     render :new
   end
 

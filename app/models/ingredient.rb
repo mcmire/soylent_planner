@@ -14,15 +14,13 @@ class Ingredient < ActiveRecord::Base
 
   def self.units; UNITS; end
 
-  def self.new_from_usda_food(usda_food)
+  def self.from_usda_food(usda_food)
     new do |ingredient|
       ingredient.name = usda_food.long_description
+      ingredient.container_size = 1000
+      ingredient.cost = 100
       ingredient.serving_size = 100  # always
-
-      nutrient_collection = ingredient.build_nutrient_collection
-      usda_food.ingredient_attributes.each do |attribute_name, value|
-        nutrient_collection.__send__("#{attribute_name}=", value)
-      end
+      ingredient.build_nutrient_collection(usda_food.ingredient_attributes)
     end
   end
 

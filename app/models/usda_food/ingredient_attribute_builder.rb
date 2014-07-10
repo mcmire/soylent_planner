@@ -33,28 +33,39 @@ class UsdaFood::IngredientAttributeBuilder
     folate: 417,
     pantothenic_acid: 410,
     choline: 421
-  }
+  }.stringify_keys
 
   def initialize(usda_food)
     @usda_food = usda_food
   end
 
   def call
-    attribute_value_producers.inject({}) do |hash, producer|
-      value = producer.call
+    attributes = {}
+
+    attribute_value_producers.each do |producer|
+      value = producer.call.to_f
 
       if value > 0
-        hash[producer.attribute_name] = value
+        attributes[producer.attribute_name] = value
       end
-
-      hash
     end
+
+    attributes
   end
 
   def foods_nutrients_by_nutrient_number
-    @_foods_nutrients_by_nutrient_number ||=
-      usda_food.foods_nutrients.
-      index_by { |foods_nutrient| foods_nutrient.nutrient_number.to_i }
+    if defined?(@_foods_nutrients_by_nutrient_number)
+      @_foods_nutrients_by_nutrient_number
+    else
+      foods_nutrients_by_nutrient_number = {}
+
+      usda_food.foods_nutrients.each do |foods_nutrient|
+        key = foods_nutrient.nutrient_number.to_i
+        foods_nutrients_by_nutrient_number[key] = foods_nutrient
+      end
+
+      @_foods_nutrients_by_nutrient_number = foods_nutrients_by_nutrient_number
+    end
   end
 
   private
@@ -62,9 +73,17 @@ class UsdaFood::IngredientAttributeBuilder
   attr_reader :usda_food
 
   def attribute_value_producers
+    producers = []
+
     NUTRIENT_NUMBERS_BY_INGREDIENT_ATTRIBUTE.
-      map do |attribute_name, nutrient_numbers|
-        AttributeValueProducer.new(self, attribute_name, nutrient_numbers)
+      each do |attribute_name, nutrient_numbers|
+        producers << AttributeValueProducer.new(
+          self,
+          attribute_name,
+          nutrient_numbers
+        )
       end
+
+    producers
   end
 end

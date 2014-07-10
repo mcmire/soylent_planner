@@ -40,7 +40,7 @@ class UsdaFood < UsdaNutrientDatabase::Food
   end
 
   def to_soylent_planner_ingredient
-    Ingredient.new.tap do |ingredient|
+    Ingredient.new do |ingredient|
       ingredient.name = long_description
       ingredient.container_size = 1000
       ingredient.cost = 100
@@ -52,7 +52,6 @@ class UsdaFood < UsdaNutrientDatabase::Food
   private
 
   def ingredient_attribute_builder
-    @_ingredient_attribute_builder ||=
-      IngredientAttributeBuilder.new(self)
+    @_ingredient_attribute_builder ||= IngredientAttributeBuilder.new(self)
   end
 end

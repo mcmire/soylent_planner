@@ -1,6 +1,4 @@
 class OptimalRecipesFromUsdaDatabaseController < ApplicationController
-  include BenchmarkingHelpers
-
   def new
     @recipe_url = params.fetch(:recipe_url) do
       'http://diy.soylent.me/recipes/all-ingredients'
@@ -28,7 +26,4 @@ class OptimalRecipesFromUsdaDatabaseController < ApplicationController
         nutrient_profile_id: @nutrient_profile_id
     end
   end
-
-  private
-
 end

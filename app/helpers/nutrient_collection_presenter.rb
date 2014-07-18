@@ -20,12 +20,22 @@ class NutrientCollectionPresenter < SimpleDelegator
       value_parts = [ value, unit ]
 
       if @nutrient_profile
-        percentage = percentage_of_min(attribute_name, value)
+        min_percentage = percentage_of_min(attribute_name, value)
+        max_percentage = percentage_of_max(attribute_name, value)
+        min_and_max_percentage = []
 
-        if percentage
+        if min_percentage
+          min_and_max_percentage << "#{min_percentage.round(2)}% of min"
+        end
+
+        if max_percentage
+          min_and_max_percentage << "#{max_percentage.round(2)}% of max"
+        end
+
+        if min_and_max_percentage.any?
           value_parts << content_tag(:span,
-            "(#{percentage.round(2)}% of min)",
-            class: 'percentage-of-min'
+            "(#{min_and_max_percentage.join(' / ')})",
+            class: 'percentage-of-goal'
           )
         end
       end
@@ -44,7 +54,19 @@ class NutrientCollectionPresenter < SimpleDelegator
     end
   end
 
+  def percentage_of_max(attribute_name, value)
+    max_value = max_value_for(attribute_name)
+
+    if max_value && max_value > 0
+      (value.to_f / max_value) * 100
+    end
+  end
+
   def min_value_for(attribute_name)
     @nutrient_profile.min_nutrient_collection.public_send(attribute_name)
+  end
+
+  def max_value_for(attribute_name)
+    @nutrient_profile.max_nutrient_collection.public_send(attribute_name)
   end
 end

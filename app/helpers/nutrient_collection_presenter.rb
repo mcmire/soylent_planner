@@ -14,18 +14,26 @@ class NutrientCollectionPresenter < SimpleDelegator
 
   def present_with_unit(attribute_name)
     unit = NutrientCollection.unit_for(attribute_name)
-    value = public_send(attribute_name) || 0
-    value_parts = [ value, unit ]
+    value = public_send(attribute_name)
 
-    if @nutrient_profile
-      percentage = percentage_of_min(attribute_name, value)
+    if value && value > 0
+      value_parts = [ value, unit ]
 
-      if percentage
-        value_parts << "(#{percentage.round(2)}% of min)"
+      if @nutrient_profile
+        percentage = percentage_of_min(attribute_name, value)
+
+        if percentage
+          value_parts << content_tag(:span,
+            "(#{percentage.round(2)}% of min)",
+            class: 'percentage-of-min'
+          )
+        end
       end
-    end
 
-    present_with_label(attribute_name, value_parts.join(" "))
+      value_with_unit = value_parts.join(" ").html_safe
+
+      present_with_label(attribute_name, value_with_unit)
+    end
   end
 
   def percentage_of_min(attribute_name, value)

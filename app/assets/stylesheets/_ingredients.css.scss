@@ -36,3 +36,16 @@
   }
 }
 
+.ingredient-detail {
+  h2 {
+    text-align: center;
+  }
+
+  h3 {
+    @extend .row;
+  }
+
+  .percentage-of-min {
+    color: gray;
+  }
+}

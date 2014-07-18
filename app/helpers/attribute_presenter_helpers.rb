@@ -3,19 +3,23 @@ module AttributePresenterHelpers
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  def present(attribute_name)
-    value = public_send(attribute_name)
-    present_with_label(attribute_name, value)
-  end
-
   def present_with_label(attribute_name, value)
-    label = human_attribute_name(attribute_name)
-    label_tag = content_tag(:b, label)
-    "#{label_tag}: #{value}".html_safe
+    if value
+      label = human_attribute_name(attribute_name)
+      dt_tag = content_tag(:dt, label)
+      dd_tag = content_tag(:dd, value)
+      dt_tag + dd_tag
+    end
   end
 
   def present_with_unit(attribute_name)
-    "#{present(attribute_name)} #{unit}".html_safe
+    value = public_send(attribute_name)
+
+    if value && value > 0
+      value_parts = [ value, unit ]
+      value_and_unit = value_parts.join(" ")
+      present_with_label(attribute_name, value_and_unit)
+    end
   end
 
   def present_as_currency(attribute_name)

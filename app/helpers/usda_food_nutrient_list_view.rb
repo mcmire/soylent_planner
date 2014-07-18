@@ -85,7 +85,9 @@ class UsdaFoodNutrientListView
     def render
       if foods_nutrient_views.any?
         xml.h3(group_name)
-        xml.dl { foods_nutrient_views.each(&:render) }
+        xml.dl(class: 'nutrients') do
+          foods_nutrient_views.each(&:render)
+        end
       end
     end
 

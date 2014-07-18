@@ -21,6 +21,7 @@ module DiySoylent
     }
 
     def initialize(attributes = {})
+      @nutrient_profile_attributes = {}
       @min_nutrient_collection_attributes = {}
       @max_nutrient_collection_attributes = {}
 
@@ -28,14 +29,15 @@ module DiySoylent
     end
 
     def to_soylent_planner_nutrient_profile
-      ::NutrientProfile.new.tap do |nutrient_profile|
-        nutrient_profile.build_min_nutrient_collection(
-          min_nutrient_collection_attributes
-        )
-        nutrient_profile.build_max_nutrient_collection(
-          max_nutrient_collection_attributes
-        )
-      end
+      ::NutrientProfile.new(@nutrient_profile_attributes).
+        tap do |nutrient_profile|
+          nutrient_profile.build_min_nutrient_collection(
+            min_nutrient_collection_attributes
+          )
+          nutrient_profile.build_max_nutrient_collection(
+            max_nutrient_collection_attributes
+          )
+        end
     end
 
     private
@@ -45,7 +47,12 @@ module DiySoylent
 
     def assign_attributes(attributes)
       attributes.each do |key, value|
-        next if key == 'name' or EXCLUDED_ATTRIBUTES.include?(key.to_sym)
+        next if EXCLUDED_ATTRIBUTES.include?(key.to_sym)
+
+        if key == 'name'
+          @nutrient_profile_attributes[key] = value
+          next
+        end
 
         key = key.gsub('-', '_')
 

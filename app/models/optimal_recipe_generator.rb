@@ -145,7 +145,8 @@ class OptimalRecipeGenerator
 
   def build_objective_coefficients
     ingredients.map do |ingredient|
-      ingredient.average_nutrient_completeness_score
+      # ingredient.average_nutrient_completeness_score
+      ingredient.normalized_cost
     end
   end
 

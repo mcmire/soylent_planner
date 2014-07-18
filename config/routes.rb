@@ -14,4 +14,7 @@ Rails.application.routes.draw do
   get '/ingredients/new_from_usda_food',
     to: 'ingredients#new_from_usda_food',
     as: :new_ingredient_from_usda_food
+  get '/ingredients/from_usda_food',
+    to: 'ingredients#from_usda_food',
+    as: :ingredient_from_usda_food
 end

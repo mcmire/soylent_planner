@@ -14,6 +14,19 @@ class IngredientsController < ApplicationController
     render :new
   end
 
+  def from_usda_food
+    usda_food = UsdaFood.find(params[:usda_food_id])
+    ingredient = Ingredient.from_usda_food(usda_food)
+    recipe = DiySoylent::Recipe.fetch('http://diy.soylent.me/recipes/new-recipe-2',
+      nutrient_profile_id: params[:nutrient_profile_id]
+    )
+    @nutrient_profile = recipe.nutrient_profile
+    @ingredient = IngredientPresenter.new(ingredient,
+      nutrient_profile: @nutrient_profile
+    )
+    render :show
+  end
+
   def create
     @ingredient = Ingredient.new(ingredient_params)
 

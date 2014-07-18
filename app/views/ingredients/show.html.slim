@@ -1,0 +1,53 @@
+h2= @ingredient.name
+
+h3 Basic Info
+
+ul
+  - unless @ingredient.from_usda_food
+    li= @ingredient.present_with_unit(:container_size)
+    li= @ingredient.present_as_currency(:cost)
+    li= @ingredient.present(:source)
+    li= @ingredient.present(:link)
+    li= @ingredient.present_with_unit(:daily_serving)
+  li= @ingredient.present_with_unit(:serving_size)
+
+h3 Macronutrients
+
+ul
+  li= @ingredient.present_nutrient_with_unit(:calories)
+  li= @ingredient.present_nutrient_with_unit(:carbohydrates)
+  li= @ingredient.present_nutrient_with_unit(:protein)
+  li
+    = @ingredient.present_nutrient_with_unit(:total_fat)
+    ul
+      li
+        = @ingredient.present_nutrient_with_unit(:saturated_fat)
+        ul
+          li= @ingredient.present_nutrient_with_unit(:monounsaturated_fat)
+          li= @ingredient.present_nutrient_with_unit(:polyunsaturated_fat)
+      li= @ingredient.present_nutrient_with_unit(:omega_3)
+      li= @ingredient.present_nutrient_with_unit(:omega_6)
+  li
+    = @ingredient.present_nutrient_with_unit(:total_fiber)
+    ul
+      li= @ingredient.present_nutrient_with_unit(:soluble_fiber)
+      li= @ingredient.present_nutrient_with_unit(:insoluble_fiber)
+  li= @ingredient.present_nutrient_with_unit(:cholesterol)
+
+h3 Vitamins
+
+ul
+  - NutrientCollection.names_of_vitamins.each do |nutrient_name|
+    li= @ingredient.present_nutrient_with_unit(nutrient_name)
+
+h3 Minerals
+
+ul
+  - NutrientCollection.names_of_minerals.each do |nutrient_name|
+    li= @ingredient.present_nutrient_with_unit(nutrient_name)
+
+h3 Other Nutrients
+
+ul
+  li= @ingredient.present_nutrient_with_unit(:cholesterol)
+  li= @ingredient.present_nutrient_with_unit(:choline)

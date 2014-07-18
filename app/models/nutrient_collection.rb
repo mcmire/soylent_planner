@@ -78,12 +78,54 @@ class NutrientCollection < ActiveRecord::Base
     'digest'
   ]
 
+  NAMES_OF_VITAMINS = %i[
+    vitamin_a
+    vitamin_b6
+    vitamin_b12
+    vitamin_c
+    vitamin_d
+    vitamin_e
+    vitamin_k
+    thiamin
+    riboflavin
+    niacin
+    folate
+    pantothenic_acid
+    biotin
+  ]
+
+  NAMES_OF_MINERALS = %i[
+    calcium
+    chloride
+    chromium
+    copper
+    iodine
+    iron
+    magnesium
+    manganese
+    molybdenum
+    phosphorus
+    potassium
+    selenium
+    sodium
+    sulfur
+    zinc
+  ]
+
   def self.modifiable_attribute_names
     MODIFIABLE_ATTRIBUTE_NAMES
   end
 
   def self.unit_for(attribute_name)
     UNITS_BY_ATTRIBUTE_NAME.fetch(attribute_name, 'g')
+  end
+
+  def self.names_of_vitamins
+    NAMES_OF_VITAMINS
+  end
+
+  def self.names_of_minerals
+    NAMES_OF_MINERALS
   end
 
   before_save :write_digest

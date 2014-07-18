@@ -16,6 +16,7 @@ class Ingredient < ActiveRecord::Base
 
   def self.from_usda_food(usda_food)
     new do |ingredient|
+      ingredient.from_usda_food = true
       ingredient.name = usda_food.long_description
       ingredient.container_size = 1000
       ingredient.cost = 100
@@ -41,6 +42,8 @@ class Ingredient < ActiveRecord::Base
   before_save :write_digest
 
   accepts_nested_attributes_for :nutrient_collection
+
+  attr_accessor :from_usda_food
 
   def form=(form)
     unless FORMS.include?(form)

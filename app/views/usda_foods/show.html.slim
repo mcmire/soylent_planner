@@ -6,4 +6,23 @@ h1= @usda_food.long_description
       class: 'btn btn-primary' do
       | Copy to Ingredient
 
-.usda-food= list_nutrients_for(@usda_food)
+= form_tag ingredient_from_usda_food_path,
+  class: 'form-horizontal ingredient-from-usda-food-form',
+  method: :get
+
+  input(type='hidden' name='usda_food_id' value="#{params[:id]}")
+
+  .form-group
+    label.control-label.col-sm-4 Nutrient Profile ID
+    .col-sm-5
+      input.form-control(
+        name='nutrient_profile_id'
+        type='text'
+        value="#{params[:nutrient_profile_id]}"
+        placeholder='(Optional)'
+      )
+    .col-sm-3
+      button.btn.btn-primary(type="submit") View as Ingredient
+
+.usda-food
+  = list_nutrients_for(@usda_food)

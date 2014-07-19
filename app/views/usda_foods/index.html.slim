@@ -1,22 +1,36 @@
 h1 USDA Foods
 
 .usda-foods
-  form.form-inline.food-search
-    .form-group
+  form.form-horizontal.food-search
+    .form-group.center
       input.form-control(
         type='search'
         name='q'
         value="#{params[:q]}"
         placeholder='Search for a food'
       )
-    button.btn.btn-primary Search
+    .form-group.center
+      input.form-control(
+        type='search'
+        name='nutrient_profile_id'
+        value="#{params[:nutrient_profile_id]}"
+        placeholder='Compare to nutrient profile (optional)'
+      )
+
+    .buttons
+      button.btn.btn-primary Search
 
   - if params[:q]
     hr
     - if @usda_foods.count(:all) > 0
-      ul
-        - @usda_foods.each do |food|
-          li= link_to food.long_description, usda_food_path(food)
+      .search-results
+        h4= page_entries_info(@usda_foods, entry_name: 'food') + '.'
+
+        ul
+          - @usda_foods.each do |food|
+            li
+              = link_to(food.long_description, usda_food_path(food, nutrient_profile_id: params[:nutrient_profile_id]))
+
       = paginate @usda_foods
     - else
       p No matches.

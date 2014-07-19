@@ -117,7 +117,7 @@ class NutrientCollection < ActiveRecord::Base
   end
 
   def self.unit_for(attribute_name)
-    UNITS_BY_ATTRIBUTE_NAME.fetch(attribute_name, 'g')
+    UNITS_BY_ATTRIBUTE_NAME.fetch(attribute_name.to_sym, 'g')
   end
 
   def self.names_of_vitamins

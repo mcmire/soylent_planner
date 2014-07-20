@@ -25,6 +25,7 @@ class UsdaFood::IngredientAttributeBuilder
     vitamin_b6: 415,
     vitamin_b12: 418,
     vitamin_c: 401,
+    vitamin_d: 324,
     vitamin_e: 323,
     vitamin_k: 430,
     thiamin: 404,

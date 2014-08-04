@@ -42,15 +42,7 @@ class OptimalRecipeGenerator
     }
 
   def self.generate(options = {})
-    generator = new(options)
-
-    #until recipe = generator.generate
-      #generator.lower_constraints!
-    #end
-
-    #recipe
-
-    generator.generate
+    new(options).generate
   end
 
   include BenchmarkingHelpers
@@ -87,24 +79,6 @@ class OptimalRecipeGenerator
     )
   rescue SimplexWrapper::UnsolvableProblem
     nil
-  end
-
-  def lower_constraints!
-    constraints.each do |constraint|
-      start_value = constraint[:range].first
-
-      if start_value
-        start_value -= 10
-
-        if start_value < 0
-          start_value = nil
-        end
-      end
-
-      end_value = constraint[:range].last
-
-      constraint[:range] = [start_value, end_value]
-    end
   end
 
   private
